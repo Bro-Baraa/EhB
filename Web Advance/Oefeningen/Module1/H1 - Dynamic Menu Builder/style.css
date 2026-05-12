@@ -1,0 +1,40 @@
+body {
+    font-family: Arial, sans-serif;
+}
+
+#mainMenu {
+    margin-bottom: 30px;
+}
+
+#mainMenu ul {
+    list-style: none;
+    padding-left: 0;
+}
+
+#mainMenu li {
+    margin: 8px 0;
+}
+
+#mainMenu a {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+#mainMenu a.active {
+    color: blue;
+    font-weight: bold;
+}
+
+.submenu {
+    display: none;
+    margin-left: 20px;
+}
+
+.submenu.open {
+    display: block;
+}
+
+.content {
+    line-height: 1.6;
+}

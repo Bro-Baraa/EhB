@@ -1,0 +1,10 @@
+body {
+    text-align: center;
+    font-family: Arial, sans-serif;
+}
+
+#loadingMessage {
+    font-size: 30px;
+    margin: 20px;
+    font-weight: bold;
+}
