@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>H1 Mini Learning Platform</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div id="learningPlatform">
+        <div id="courses">
+            <h3>Cursussen Beheren</h3>
+            <input type="text" id="courseTitle" placeholder="Cursus titel">
+            <input type="text" id="courseDesc" placeholder="Beschrijving">
+            <button id="addCourse">Voeg Cursus Toe</button>
+            <div id="courseList"></div>
+        </div>
+
+        <div id="students">
+            <h3>Studenten Beheren</h3>
+            <input type="text" id="studentName" placeholder="Student naam">
+            <select id="coursePicker"></select>
+            <button id="enrollStudent">Schrijf Student In</button>
+            <div id="studentList"></div>
+        </div>
+
+        <div id="grades">
+            <h3>Scores Toekennen</h3>
+            <select id="studentPicker"></select>
+            <select id="modulePicker"></select>
+            <input type="number" id="moduleGrade" placeholder="Score">
+            <button id="addGrade">Ken Score Toe</button>
+        </div>
+
+        <div id="reports">
+            <h3>Rapporten</h3>
+            <select id="reportStudent"></select>
+            <button id="generateReport">Genereer Rapport</button>
+            <div id="reportOutput"></div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,29 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 30px;
+}
+
+#learningPlatform > div {
+    border: 1px solid black;
+    padding: 15px;
+    margin-bottom: 20px;
+    max-width: 500px;
+}
+
+input,
+select,
+button {
+    padding: 8px;
+    margin: 5px 0;
+    display: block;
+}
+
+.card {
+    border: 1px solid gray;
+    padding: 10px;
+    margin-top: 10px;
+}
+
+button {
+    cursor: pointer;
+}

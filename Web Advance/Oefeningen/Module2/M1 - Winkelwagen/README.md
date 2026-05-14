@@ -1,0 +1,38 @@
+# M1 - Shopping Cart
+
+This project is a simple shopping cart made with JavaScript.
+
+## Features
+
+- Add products with a name and price
+- Store products as objects in an array
+- Remove products from the cart
+- Sort products by price
+- Update the total price automatically
+
+## JavaScript Concepts
+
+- arrays
+- objects
+- push()
+- splice()
+- sort()
+- for...of loop
+- DOM selection
+- event listeners
+- createElement()
+
+## Files
+
+- index.html
+- style.css
+- script.js
+- README.md
+
+## How to Run
+
+Open `index.html` with Live Server in VS Code.
+
+## Author
+
+Baraa
