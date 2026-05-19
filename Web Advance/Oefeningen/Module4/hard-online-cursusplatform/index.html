@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Online Cursusplatform</title>
+
+<style>
+body {
+    background-color: #e1f5fe;
+    font-family: Arial, sans-serif;
+    padding: 20px;
+}
+
+.tabs {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.tab {
+    background-color: white;
+    padding: 10px;
+    cursor: pointer;
+}
+
+.tab-content {
+    background-color: white;
+    padding: 15px;
+    margin-bottom: 20px;
+}
+</style>
+</head>
+<body>
+
+<div class="tabs">
+    <div class="tab">Cursussen</div>
+    <div class="tab">Studenten</div>
+    <div class="tab">Docenten</div>
+    <div class="tab">Inschrijvingen</div>
+</div>
+
+<div class="tab-content">
+    <h2>Beschikbare Cursussen</h2>
+    <div id="course-list"></div>
+</div>
+
+<div class="tab-content">
+    <h2>Studenten</h2>
+    <div id="student-list"></div>
+</div>
+
+<div class="tab-content">
+    <h2>Docenten</h2>
+    <div id="teacher-list"></div>
+</div>
+
+<div class="tab-content">
+    <h2>Inschrijvingen</h2>
+    <div id="enrollment-list"></div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
