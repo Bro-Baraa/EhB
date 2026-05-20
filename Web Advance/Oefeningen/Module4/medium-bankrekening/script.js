@@ -1,102 +1,56 @@
 'use strict';
-
 class Bankrekening {
+  constructor(eigenaar, saldo) {
+    this.eigenaar = eigenaar;
+    this.saldo = saldo;
+  }
 
-    static teller = 1;
+  storten(bedrag) {
+    this.saldo += bedrag;
+    return "€" + bedrag + " gestort";
+  }
 
-    constructor(eigenaar, saldo) {
-
-        this.rekeningnummer =
-            Bankrekening.rekeningNrGenerator();
-
-        this.eigenaar = eigenaar;
-        this.saldo = saldo;
+  opnemen(bedrag) {
+    if (bedrag <= this.saldo) {
+      this.saldo -= bedrag;
+      return "€" + bedrag + " opgenomen";
+    } else {
+      return "Onvoldoende saldo";
     }
+  }
 
-    static rekeningNrGenerator() {
-        return 'ACC' + this.teller++;
-    }
-
-    static validerenTransactie(from, to, bedrag) {
-        return from.saldo >= bedrag;
-    }
-
-    set saldo(value) {
-
-        if (value < 0) {
-            this._saldo = 0;
-        } else {
-            this._saldo = value;
-        }
-    }
-
-    get saldo() {
-        return this._saldo;
-    }
-
-    get overzicht() {
-        return `${this.eigenaar} - €${this.saldo}`;
-    }
-
-    storten(bedrag) {
-        this.saldo += bedrag;
-        return `€${bedrag} gestort`;
-    }
-
-    opnemen(bedrag) {
-
-        if (Bankrekening.validerenTransactie(this, null, bedrag)) {
-
-            this.saldo -= bedrag;
-            return `€${bedrag} opgenomen`;
-        }
-
-        return 'Onvoldoende saldo';
-    }
+  toonInfo() {
+    return this.eigenaar + " - €" + this.saldo;
+  }
 }
 
 class Spaarrekening extends Bankrekening {
+  constructor(eigenaar, saldo, rente) {
+    super(eigenaar, saldo);
+    this.rente = rente;
+  }
 
-    constructor(eigenaar, saldo, rente) {
-        super(eigenaar, saldo);
-        this.rentepercentage = rente;
-    }
-
-    renteToevoegen() {
-        this.saldo += this.saldo * this.rentepercentage;
-    }
+  voegRenteToe() {
+    this.saldo = this.saldo + this.saldo * this.rente;
+  }
 }
 
-const rekening1 = new Bankrekening('Baraa', 500);
-const rekening2 = new Spaarrekening('Alex', 1000, 0.05);
+const rekening1 = new Bankrekening("Baraa", 500);
+const rekening2 = new Spaarrekening("Alex", 1000, 0.05);
 
 const transacties = [];
 
 transacties.push(rekening1.storten(200));
 transacties.push(rekening1.opnemen(100));
 
-rekening2.renteToevoegen();
+rekening2.voegRenteToe();
 
-const accounts = document.getElementById('accounts');
-const transactions = document.getElementById('transactions');
+const accounts = document.getElementById("accounts");
+const transactions = document.getElementById("transactions");
 
-accounts.innerHTML += `
-    <div class="card">
-        <p>${rekening1.overzicht}</p>
-    </div>
-`;
+accounts.innerHTML += "<p>" + rekening1.toonInfo() + "</p>";
+accounts.innerHTML += "<p>" + rekening2.toonInfo() + "</p>";
 
-accounts.innerHTML += `
-    <div class="card">
-        <p>${rekening2.overzicht}</p>
-    </div>
-`;
-
-for (let transactie of transacties) {
-
-    transactions.innerHTML += `
-        <div class="card">
-            <p>${transactie}</p>
-        </div>
-    `;
+for (let i = 0; i < transacties.length; i++) {
+  transactions.innerHTML += "<p>" + transacties[i] + "</p>";
 }

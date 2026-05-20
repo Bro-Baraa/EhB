@@ -1,64 +1,40 @@
 'use strict';
 
 class Product {
+  constructor(naam, prijs, voorraad) {
+    this.naam = naam;
+    this.prijs = prijs;
+    this.voorraad = voorraad;
+  }
 
-    constructor(naam, prijs, voorraad) {
-        this.naam = naam;
-        this.prijs = prijs;
-        this.voorraad = voorraad;
+  berekenVerkoopprijs() {
+    return this.prijs * 1.21;
+  }
+
+  isBeschikbaar() {
+    if (this.voorraad > 0) {
+      return "Ja";
+    } else {
+      return "Nee";
     }
+  }
 
-    set prijs(value) {
+  toonProduct() {
+    let tekst = "<h2>" + this.naam + "</h2>";
+    tekst += "<p>Prijs: €" + this.prijs + "</p>";
+    tekst += "<p>Verkoopprijs: €" + this.berekenVerkoopprijs() + "</p>";
+    tekst += "<p>Beschikbaar: " + this.isBeschikbaar() + "</p>";
 
-        if (value < 0) {
-            this._prijs = 0;
-        } else {
-            this._prijs = value;
-        }
-    }
-
-    get prijs() {
-        return this._prijs;
-    }
-
-    set voorraad(value) {
-
-        if (value < 0) {
-            this._voorraad = 0;
-        } else {
-            this._voorraad = value;
-        }
-    }
-
-    get voorraad() {
-        return this._voorraad;
-    }
-
-    get verkoopprijs() {
-        return this.prijs * 1.21;
-    }
-
-    get beschikbaar() {
-        return this.voorraad > 0;
-    }
+    return tekst;
+  }
 }
 
-const producten = [
-    new Product('Laptop', 900, 5),
-    new Product('Mouse', 25, 0),
-    new Product('Keyboard', 60, 8)
-];
+const product1 = new Product("Laptop", 900, 5);
+const product2 = new Product("Mouse", 25, 0);
+const product3 = new Product("Keyboard", 60, 8);
 
-const output = document.getElementById('output');
+const output = document.getElementById("output");
 
-for (let product of producten) {
-
-    output.innerHTML += `
-        <div class="product">
-            <h2>${product.naam}</h2>
-            <p>Prijs: €${product.prijs}</p>
-            <p>Verkoopprijs: €${product.verkoopprijs.toFixed(2)}</p>
-            <p>Beschikbaar: ${product.beschikbaar}</p>
-        </div>
-    `;
-}
+output.innerHTML += product1.toonProduct();
+output.innerHTML += product2.toonProduct();
+output.innerHTML += product3.toonProduct();
