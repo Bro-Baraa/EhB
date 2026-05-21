@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Image Loader</title>
+
+<style>
+body {
+    background-color: #eef7ee;
+    font-family: Arial, sans-serif;
+    padding: 20px;
+}
+
+.gallery {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.gallery img {
+    width: 200px;
+    height: 200px;
+    object-fit: cover;
+}
+
+.progress {
+    width: 100%;
+    background-color: #ddd;
+    margin: 10px 0;
+}
+
+.progress-bar {
+    height: 20px;
+    background-color: #4CAF50;
+    text-align: center;
+    line-height: 20px;
+    color: white;
+    width: 0%;
+}
+</style>
+</head>
+<body>
+
+<h1>Afbeeldingen Galerij</h1>
+
+<div class="progress">
+    <div class="progress-bar">0%</div>
+</div>
+
+<button id="loadButton">Laad afbeeldingen</button>
+
+<div class="gallery"></div>
+
+<script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Promise Timer</title>
+
+<style>
+body {
+    background-color: #fff8e1;
+    font-family: Arial, sans-serif;
+    text-align: center;
+    padding-top: 50px;
+}
+
+.timer {
+    font-size: 40px;
+    margin-top: 20px;
+}
+
+button {
+    padding: 10px 20px;
+}
+</style>
+</head>
+<body>
+
+<h1>Promise Timer</h1>
+
+<div class="controls">
+    <input type="number" id="seconds" min="1" max="60" value="10">
+
+    <button id="startButton">Start Timer</button>
+
+    <button id="cancelButton" disabled>
+        Annuleer
+    </button>
+</div>
+
+<div class="timer" id="timerDisplay">0</div>
+
+<div id="message"></div>
+
+<script src="script.js"></script>
+</body>
+</html>

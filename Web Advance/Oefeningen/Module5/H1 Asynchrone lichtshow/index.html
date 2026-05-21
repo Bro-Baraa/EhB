@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Asynchrone Lichtshow</title>
+
+<style>
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #1a1a1a;
+    font-family: Arial, sans-serif;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+
+.blocks {
+    display: flex;
+    gap: 10px;
+}
+
+.block {
+    width: 60px;
+    height: 60px;
+    border-radius: 5px;
+}
+
+button {
+    padding: 12px 24px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+h1 {
+    color: white;
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+
+    <h1>Asynchrone Lichtshow</h1>
+
+    <div class="blocks">
+
+        <div class="block" style="background-color: #ff5252;"></div>
+
+        <div class="block" style="background-color: #ffeb3b;"></div>
+
+        <div class="block" style="background-color: #4CAF50;"></div>
+
+        <div class="block" style="background-color: #2196F3;"></div>
+
+        <div class="block" style="background-color: #9c27b0;"></div>
+
+    </div>
+
+    <button id="startBtn">Start Lichtshow</button>
+
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
