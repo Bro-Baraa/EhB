@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Post Verkenner</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
+        .filter-controls { background-color: #f5f5f5; padding: 15px; border-radius: 8px; margin-bottom: 20px; }
+        .post { border: 1px solid #ddd; border-radius: 8px; padding: 15px; margin-bottom: 15px; background-color: #fff; }
+        .post-titel { font-size: 18px; font-weight: bold; margin-bottom: 10px; }
+        .post-body { color: #333; line-height: 1.5; }
+        .post-info { color: #666; font-size: 14px; margin-top: 10px; display: flex; justify-content: space-between; }
+        select, input { padding: 8px; margin-right: 10px; }
+        button { padding: 8px 16px; background-color: #4285f4; color: white; border: none; border-radius: 4px; cursor: pointer; }
+        .geen-resultaten, .laad-indicator { text-align: center; padding: 30px; color: #666; }
+        .error { color: red; text-align: center; padding: 20px; }
+    </style>
+</head>
+<body>
+    <h1>Post Verkenner</h1>
+
+    <div class="filter-controls">
+        <div>
+            <label for="zoekterm">Zoek op titel:</label>
+            <input type="text" id="zoekterm" placeholder="Zoek...">
+        </div>
+        <div style="margin-top: 10px;">
+            <label for="sorteer">Sorteer op:</label>
+            <select id="sorteer">
+                <option value="titel-oplopend">Titel (A-Z)</option>
+                <option value="titel-aflopend">Titel (Z-A)</option>
+                <option value="id-oplopend">ID (oplopend)</option>
+                <option value="id-aflopend">ID (aflopend)</option>
+            </select>
+            <label for="limiet">Aantal:</label>
+            <select id="limiet">
+                <option value="5">5</option>
+                <option value="10" selected>10</option>
+                <option value="20">20</option>
+                <option value="50">50</option>
+            </select>
+            <button id="toepassen">Toepassen</button>
+        </div>
+    </div>
+
+    <div id="posts-container"><div class="laad-indicator">Posts laden...</div></div>
+
+    <script src="script.js"></script>
+</body>
+</html>

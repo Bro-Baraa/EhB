@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTTP Status Tester</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
+        .endpoint-lijst { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px; margin-bottom: 20px; }
+        .endpoint-knop { padding: 10px; background-color: #f1f1f1; border: 1px solid #ddd; border-radius: 4px; cursor: pointer; text-align: center; }
+        .resultaat-container { padding: 15px; border: 1px solid #ddd; border-radius: 4px; margin-top: 20px; }
+        .status-success { color: green; }
+        .status-redirect { color: orange; }
+        .status-client-error { color: red; }
+        .status-server-error { color: darkred; }
+        pre { white-space: pre-wrap; }
+    </style>
+</head>
+<body>
+    <h1>HTTP Status Tester</h1>
+    <p>Klik op de verschillende endpoints om HTTP-statussen te testen:</p>
+
+    <div class="endpoint-lijst">
+        <div class="endpoint-knop" data-code="200">200 OK</div>
+        <div class="endpoint-knop" data-code="301">301 Redirect</div>
+        <div class="endpoint-knop" data-code="404">404 Not Found</div>
+        <div class="endpoint-knop" data-code="500">500 Server Error</div>
+    </div>
+
+    <div class="resultaat-container">
+        <h3>Resultaat:</h3>
+        <div id="status-info">Selecteer een endpoint om te testen...</div>
+        <pre id="response-details"></pre>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
