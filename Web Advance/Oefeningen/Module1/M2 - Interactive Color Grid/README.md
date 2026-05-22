@@ -2,7 +2,7 @@
 
 This project is a simple interactive grid made with JavaScript.
 
-## Features
+
 
 - 5x5 color grid
 - Hover changes color to red

@@ -2,7 +2,6 @@
 
 This project creates a dynamic navigation menu with JavaScript.
 
-## Features
 
 - Automatically creates a menu from h1 and h2 tags
 - Main chapters and sub sections

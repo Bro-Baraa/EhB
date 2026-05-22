@@ -2,7 +2,7 @@
 
 This project uses JavaScript to work with HTML elements.
 
-## Features
+
 
 - Select elements with different methods
 - Change text color
