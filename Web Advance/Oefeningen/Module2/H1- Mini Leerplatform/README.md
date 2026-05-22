@@ -1,19 +1,9 @@
-body {
-    font-family: Arial, sans-serif;
-    margin: 30px;
-}
 
-#learningPlatform > div {
-    border: 1px solid black;
-    padding: 15px;
-    margin-bottom: 20px;
-    max-width: 500px;
-}
 # H1 - Mini Learning Platform
 
 This project is a small learning platform made with HTML, CSS, and JavaScript.
 
-## Features
+
 
 - Add courses with a title and description
 - Each course gets default modules
@@ -23,7 +13,7 @@ This project is a small learning platform made with HTML, CSS, and JavaScript.
 - Remove courses
 - Update dropdown menus when data changes
 
-## JavaScript Concepts
+# JavaScript Concepts
 
 - const
 - arrays
@@ -36,14 +26,4 @@ This project is a small learning platform made with HTML, CSS, and JavaScript.
 - event listeners
 - innerHTML
 
-## Files
-
-- index.html
-- style.css
-- script.js
-- README.md
-
-## How to Run
-
-Open `index.html` with Live Server in VS Code.
 

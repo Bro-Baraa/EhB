@@ -2,7 +2,6 @@
 
 This project is a simple shopping cart made with JavaScript.
 
-## Features
 
 - Add products with a name and price
 - Store products as objects in an array
@@ -10,7 +9,7 @@ This project is a simple shopping cart made with JavaScript.
 - Sort products by price
 - Update the total price automatically
 
-## JavaScript Concepts
+# JavaScript Concepts
 
 - arrays
 - objects

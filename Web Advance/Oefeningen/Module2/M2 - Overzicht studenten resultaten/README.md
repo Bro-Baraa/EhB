@@ -2,8 +2,6 @@
 
 This project is a small dashboard for student results.
 
-## Features
-
 - Select a student
 - Add a course and score
 - Store results in objects
@@ -11,16 +9,7 @@ This project is a small dashboard for student results.
 - Calculate average score
 - Show highest and lowest score
 
-## JavaScript Concepts
 
-- objects
-- arrays
-- push()
-- for...of loop
-- template literals
-- DOM selection
-- event listeners
-- innerHTML
 
 
 

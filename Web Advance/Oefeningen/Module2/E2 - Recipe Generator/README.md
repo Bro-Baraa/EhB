@@ -2,7 +2,6 @@
 
 This project generates a simple recipe card with JavaScript.
 
-## Features
 
 - Enter a recipe name
 - Enter preparation time
@@ -10,7 +9,7 @@ This project generates a simple recipe card with JavaScript.
 - Generate a recipe card
 - Show ingredients in a list
 
-## JavaScript Concepts
+# JavaScript Concepts
 
 - template literals
 - split()

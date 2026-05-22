@@ -2,15 +2,13 @@
 
 This project is a simple score calculator for student scores.
 
-## Features
-
 - Add scores between 0 and 20
 - Store scores in an array
 - Show the average score
 - Show the highest score
 - Display all added scores in a list
 
-## JavaScript Concepts
+# JavaScript Concepts
 
 - let
 - arrays
