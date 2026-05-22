@@ -22,14 +22,5 @@ This project is a small dashboard for student results.
 - event listeners
 - innerHTML
 
-## Files
 
-- index.html
-- style.css
-- script.js
-- README.md
-
-## How to Run
-
-Open `index.html` with Live Server in VS Code.
 

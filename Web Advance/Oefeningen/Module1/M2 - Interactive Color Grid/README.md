@@ -10,18 +10,5 @@ This project is a simple interactive grid made with JavaScript.
 - Double click changes color to green
 - Shows how many cells have each color
 
-## Technologies
 
-- HTML
-- CSS
-- JavaScript
 
-## Files
-
-- index.html
-- style.css
-- script.js
-
-## Author
-
-Baraa

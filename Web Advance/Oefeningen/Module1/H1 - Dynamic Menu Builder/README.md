@@ -11,18 +11,3 @@ This project creates a dynamic navigation menu with JavaScript.
 - Active menu item
 - Expand and collapse submenu
 
-## Technologies
-
-- HTML
-- CSS
-- JavaScript
-
-## Files
-
-- index.html
-- style.css
-- script.js
-
-## Author
-
-Baraa

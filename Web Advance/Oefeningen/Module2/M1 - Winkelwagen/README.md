@@ -22,17 +22,3 @@ This project is a simple shopping cart made with JavaScript.
 - event listeners
 - createElement()
 
-## Files
-
-- index.html
-- style.css
-- script.js
-- README.md
-
-## How to Run
-
-Open `index.html` with Live Server in VS Code.
-
-## Author
-
-Baraa
