@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Lazy Loading Images</title>
+<style>
+body {
+    background-color: #eef6ff;
+    font-family: Arial, sans-serif;
+}
+.image-container {
+    max-width: 800px;
+    margin: 0 auto;
+}
+.lazy-image {
+    width: 100%;
+    height: 400px;
+    margin-bottom: 50px;
+    background-color: #d7d7d7;
+    display: block;
+    object-fit: cover;
+}
+</style>
+</head>
+<body>
+
+<div class="image-container">
+    <h1>Fotogalerij met Lazy Loading</h1>
+    <p>Scroll naar beneden om meer afbeeldingen te zien.</p>
+
+    <img class="lazy-image" data-src="https://picsum.photos/800/400?random=1" alt="Random afbeelding 1">
+    <img class="lazy-image" data-src="https://picsum.photos/800/400?random=2" alt="Random afbeelding 2">
+    <img class="lazy-image" data-src="https://picsum.photos/800/400?random=3" alt="Random afbeelding 3">
+    <img class="lazy-image" data-src="https://picsum.photos/800/400?random=4" alt="Random afbeelding 4">
+    <img class="lazy-image" data-src="https://picsum.photos/800/400?random=5" alt="Random afbeelding 5">
+    <img class="lazy-image" data-src="https://picsum.photos/800/400?random=6" alt="Random afbeelding 6">
+    <img class="lazy-image" data-src="https://picsum.photos/800/400?random=7" alt="Random afbeelding 7">
+    <img class="lazy-image" data-src="https://picsum.photos/800/400?random=8" alt="Random afbeelding 8">
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
