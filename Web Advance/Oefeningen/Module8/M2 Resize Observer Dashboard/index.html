@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Responsive Dashboard</title>
+<style>
+body {
+    margin: 0;
+    padding: 20px;
+    font-family: Arial, sans-serif;
+    background-color: #f7f2ff;
+}
+.dashboard-container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    border: 2px dashed #999;
+    padding: 20px;
+    box-sizing: border-box;
+    background-color: white;
+}
+.dashboard {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+.dashboard[data-columns="1"] {
+    grid-template-columns: 1fr;
+}
+.dashboard[data-columns="2"] {
+    grid-template-columns: repeat(2, 1fr);
+}
+.card {
+    background-color: #eeeeee;
+    border-radius: 8px;
+    padding: 20px;
+}
+.info-panel {
+    margin-top: 20px;
+    padding: 10px;
+    background-color: #e9f7fe;
+    border-radius: 8px;
+}
+</style>
+</head>
+<body>
+
+<h1>Responsive Dashboard</h1>
+
+<p>Maak het browservenster kleiner om de kolommen te zien veranderen.</p>
+
+<div class="dashboard-container" id="container">
+    <div class="dashboard" id="dashboard" data-columns="3">
+        <div class="card">
+            <h2>Kaart 1</h2>
+            <p>Dashboard informatie hier...</p>
+        </div>
+        <div class="card">
+            <h2>Kaart 2</h2>
+            <p>Dashboard informatie hier...</p>
+        </div>
+        <div class="card">
+            <h2>Kaart 3</h2>
+            <p>Dashboard informatie hier...</p>
+        </div>
+        <div class="card">
+            <h2>Kaart 4</h2>
+            <p>Dashboard informatie hier...</p>
+        </div>
+        <div class="card">
+            <h2>Kaart 5</h2>
+            <p>Dashboard informatie hier...</p>
+        </div>
+        <div class="card">
+            <h2>Kaart 6</h2>
+            <p>Dashboard informatie hier...</p>
+        </div>
+    </div>
+</div>
+
+<div class="info-panel">
+    <p>Huidige breedte: <span id="current-width">-</span>px</p>
+    <p>Aantal kolommen: <span id="column-count">3</span></p>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
