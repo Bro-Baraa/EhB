@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Food Explorer 🍴</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="/src/css/main.css" />
+  </head>
+  <body>
+
+    <!-- top navigation bar -->
+    <header class="header">
+      <a class="logo" href="#">
+        <span class="logo-icon">🍴</span>
+        <span class="logo-text">Food Explorer</span>
+      </a>
+
+      <nav class="main-nav">
+        <button class="nav-btn active" data-view="browse">🍽️ Browse</button>
+        <button class="nav-btn" data-view="favorites">
+          ❤️ Favorites
+          <span id="fav-count" class="badge">0</span>
+        </button>
+      </nav>
+
+      <div class="header-actions">
+        <button id="theme-toggle" class="icon-btn" title="Toggle theme">🌙</button>
+        <select id="lang-select" class="lang-select">
+          <option value="en">🇬🇧 EN</option>
+          <option value="ar">🇸🇦 AR</option>
+          <option value="nl">🇧🇪 NL</option>
+        </select>
+      </div>
+    </header>
+
+    <main class="page-wrapper">
+
+      <!-- hero banner -->
+      <section class="hero">
+        <div class="hero-text">
+          <p class="hero-label">Powered by TheMealDB</p>
+          <h1 class="hero-title">Discover meals from around the world</h1>
+          <p class="hero-sub">Search, filter and save your favourite recipes in one place.</p>
+        </div>
+        <div class="hero-emojis" aria-hidden="true">
+          <span>🍜</span>
+          <span>🥘</span>
+          <span>🍰</span>
+          <span>🌮</span>
+        </div>
+      </section>
+
+      <!-- browse view -->
+      <section id="view-browse" class="view">
+
+        <!-- search + filter bar -->
+        <div class="controls-bar">
+          <form id="search-form" class="search-box" novalidate>
+            <span class="search-icon-label">🔍</span>
+            <input
+              id="search-input"
+              type="search"
+              class="search-input"
+              placeholder="Search meals..."
+              autocomplete="off"
+              minlength="2"
+            />
+            <button id="search-clear" type="button" class="clear-btn hidden">✕</button>
+          </form>
+
+          <div class="filter-row">
+            <select id="filter-category" class="filter-select">
+              <option value="">All Categories</option>
+            </select>
+            <select id="filter-area" class="filter-select">
+              <option value="">All Cuisines</option>
+            </select>
+            <select id="sort-select" class="filter-select">
+              <option value="name-asc">A → Z</option>
+              <option value="name-desc">Z → A</option>
+              <option value="category">By Category</option>
+              <option value="area">By Cuisine</option>
+            </select>
+          </div>
+
+          <div class="view-btns">
+            <button id="view-grid" class="icon-btn active" type="button" title="Grid view">⊞</button>
+            <button id="view-list" class="icon-btn" type="button" title="List view">☰</button>
+          </div>
+        </div>
+
+        <!-- results info -->
+        <div class="results-bar">
+          <span id="results-count" class="results-text">Loading meals...</span>
+          <button id="reset-filters" class="reset-btn hidden" type="button">Reset filters ✕</button>
+        </div>
+
+        <!-- meal cards go here -->
+        <div id="meals-container" class="meals-grid" aria-live="polite"></div>
+
+        <!-- loading spinner -->
+        <div id="loader" class="loader">
+          <div class="spinner"></div>
+          <p>Loading meals...</p>
+        </div>
+
+        <!-- shown when no results -->
+        <div id="empty-state" class="empty-state hidden">
+          <p class="empty-emoji">🍽️</p>
+          <p class="empty-title">No meals found</p>
+          <p class="empty-sub">Try a different search or filter</p>
+        </div>
+
+      </section>
+
+      <!-- favorites view -->
+      <section id="view-favorites" class="view hidden">
+        <div class="favorites-header">
+          <div>
+            <p class="hero-label">Your collection</p>
+            <h2>Saved Recipes ❤️</h2>
+          </div>
+          <button id="clear-favorites" class="danger-btn hidden" type="button">Clear all</button>
+        </div>
+
+        <div id="favorites-container" class="meals-grid"></div>
+
+        <div id="favorites-empty" class="empty-state hidden">
+          <p class="empty-emoji">💔</p>
+          <p class="empty-title">No favorites yet</p>
+          <p class="empty-sub">Browse meals and click Save to add them here</p>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- detail modal -->
+    <div id="modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+      <div class="modal-backdrop" data-close="modal"></div>
+      <article class="modal-box">
+        <button id="modal-close" class="modal-close-btn" type="button" aria-label="Close">✕</button>
+        <div id="modal-body" class="modal-body"></div>
+      </article>
+    </div>
+
+    <!-- toast notification -->
+    <div id="toast" class="toast hidden" role="status" aria-live="polite"></div>
+
+    <script type="module" src="/src/js/main.js"></script>
+  </body>
+</html>

@@ -1,64 +1,63 @@
 package Toets_Examen_Baraa.Vaartuig_Hierarchie;
 
 
-public class Vaartuig {
+import java.io.Serializable;
 
-    private String vaartuig;
+
+public abstract class Vaartuig implements Serializable {
+
+ // this is registratiecode and dagverbruik :
+    private String registratiecode;
     private int dagverbruik;
 
+// This is Constructor gives every ship a code and feul use
 
-    // Constructor
-    public Vaartuig(String vaartuig, int dagverbruik) {
-        this.vaartuig = vaartuig;
+    public Vaartuig(String registratiecode, int dagverbruik) {
+
+        this.registratiecode = registratiecode;
         this.dagverbruik = dagverbruik;
     }
 
-    private class vrachtschip {
-        private String container;
-        private int tanker;
-        private int bulk;
-
-
-
-
-    }
-
-    private class Passagiersschip{
-        private int dekken;
-
-    }
-
-    private class yacht{
-        private String eigenaar;
-
-
-
+    // Getter return the Regis code
+    public String getRegistratiecode() {
+        return registratiecode;
     }
 
 
 
 
+    // This is Settter change registratiecode
+    public void setRegistratiecode(String registratiecode) {
+        this.registratiecode = registratiecode;
+    }
+
+    // Getter return the daily feul use
 
 
+    public int getDagverbruik() {
+        return dagverbruik;
+    }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    // This is Setter changes the daily fuel use
+    public void setDagverbruik(int dagverbruik) {
+        this.dagverbruik = dagverbruik;
+    }
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
