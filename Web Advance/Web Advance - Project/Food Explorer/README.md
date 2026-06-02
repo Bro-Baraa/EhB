@@ -4,9 +4,9 @@ A single-page web app built with HTML, CSS and vanilla JavaScript. It uses the [
 
 This was made as a project for the Web Advanced course.
 
----
 
-## Features
+
+# Features
 
 - Browse 80+ meals loaded from the API
 - Search by meal name, category or cuisine
@@ -19,9 +19,9 @@ This was made as a project for the Web Advanced course.
 - Dark / light theme toggle
 - Responsive layout for desktop, tablet and mobile
 
----
 
-## Installation
+
+# Installation
 
 ```bash
 git clone https://github.com/your-username/food-explorer.git
@@ -36,9 +36,9 @@ npm run build
 npm run preview
 ```
 
----
 
-## API
+
+# API
 
 This project uses the free [TheMealDB API](https://www.themealdb.com/api.php).
 
@@ -49,9 +49,9 @@ This project uses the free [TheMealDB API](https://www.themealdb.com/api.php).
 | `list.php?c=list` | Get all categories |
 | `list.php?a=list` | Get all cuisines |
 
----
 
-## Folder structure
+
+# Folder structure
 
 ```
 food-explorer/
@@ -72,11 +72,12 @@ food-explorer/
         └── ui.js           → render cards, modal, toast
 ```
 
----
 
-## Technical requirements
 
-### DOM manipulation
+# Technical requirements
+
+
+# DOM manipulation
 
 | What | File | Line | How |
 |---|---|---|---|
@@ -84,9 +85,9 @@ food-explorer/
 | DOM manipulation | `src/js/ui.js` | 41–47, 76–85 | `fillSelect` creates options, `renderMeals` writes cards to the page |
 | Event listeners | `src/js/main.js` | 84–143 | `bindEvents()` adds all listeners for buttons, filters, search, modal |
 
----
 
-### JavaScript concepts
+
+# JavaScript concepts
 
 | Concept | File | Line | How |
 |---|---|---|---|
@@ -110,18 +111,16 @@ food-explorer/
 | Async / Await | `src/js/main.js` | 145, 62 | `init()` and `handleSearch` are async |
 | Observer API | `src/js/ui.js` | 32–39 | `IntersectionObserver` animates cards on scroll |
 
----
 
-### Data & API
+# Data & API
 
 | Concept | File | Line | How |
 |---|---|---|---|
 | Fetch | `src/js/api.js` | 5 | `fetch()` to call TheMealDB API |
 | JSON manipulation | `src/js/api.js` | 10–19 | `normalizeMeal()` turns raw API data into a clean object |
 
----
 
-### Storage & validation
+# Storage & validation
 
 | Concept | File | Line | How |
 |---|---|---|---|
@@ -131,9 +130,9 @@ food-explorer/
 | LocalStorage | `src/js/favorites.js` | 5, 16 | Favorites saved and loaded from localStorage |
 | LocalStorage | `src/js/preferences.js` | 10, 14–15 | Preferences (theme, language, view) saved between sessions |
 
----
 
-### Styling & layout
+
+# Styling & layout
 
 | Concept | File | Where | How |
 |---|---|---|---|
@@ -146,21 +145,19 @@ food-explorer/
 | Responsive | `src/css/main.css` | `@media (max-width: 820px)` | Tablet layout |
 | Responsive | `src/css/main.css` | `@media (max-width: 480px)` | Mobile layout |
 
----
 
-## Screenshots
+
+# Screenshots
 
 *(Add screenshots here after running the project)*
 
----
 
-## AI usage
+# AI usage
 
 I used Claude (claude.ai) to help with parts of this project. The full chatlog is included with this submission as required. All code has been reviewed and I understand how everything works.
 
----
 
-## Sources
+# Sources
 
 - TheMealDB API: https://www.themealdb.com/api.php
 - MDN Fetch API: https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API
