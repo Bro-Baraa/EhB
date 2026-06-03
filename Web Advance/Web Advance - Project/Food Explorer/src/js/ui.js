@@ -1,6 +1,7 @@
 import { isFavorite } from './favorites.js';
+import { getPreferences } from './preferences.js';
 
-// all the DOM elements we need, selected once here
+// select all elements once at startup
 export const elements = {
   navButtons:          document.querySelectorAll('.nav-btn'),
   browseView:          document.querySelector('#view-browse'),
@@ -20,61 +21,60 @@ export const elements = {
   emptyState:          document.querySelector('#empty-state'),
   favCount:            document.querySelector('#fav-count'),
   clearFavorites:      document.querySelector('#clear-favorites'),
-  themeToggle:         document.querySelector('#theme-toggle'),
   langSelect:          document.querySelector('#lang-select'),
-  gridView:            document.querySelector('#view-grid'),
-  listView:            document.querySelector('#view-list'),
+  gridBtn:             document.querySelector('#view-grid'),
+  listBtn:             document.querySelector('#view-list'),
   modal:               document.querySelector('#modal'),
   modalBody:           document.querySelector('#modal-body'),
   modalClose:          document.querySelector('#modal-close'),
   toast:               document.querySelector('#toast'),
 };
 
-// IntersectionObserver to animate cards when they scroll into view
-const cardObserver = new IntersectionObserver((entries) => {
+// animate cards when they scroll into view
+const observer = new IntersectionObserver((entries) => {
   entries.forEach((entry) => {
     if (entry.isIntersecting) {
       entry.target.classList.add('visible');
-      cardObserver.unobserve(entry.target);
+      observer.unobserve(entry.target);
     }
   });
 }, { threshold: 0.1 });
 
 
-// fill a <select> with options from an array
-export const fillSelect = (selectEl, items, placeholder) => {
-  selectEl.innerHTML = `<option value="">${placeholder}</option>`;
-
+export const fillSelect = (el, items, placeholder) => {
+  el.innerHTML = `<option value="">${placeholder}</option>`;
   items.forEach((item) => {
-    const option = document.createElement('option');
-    option.value = item;
-    option.textContent = item;
-    selectEl.appendChild(option);
+    const opt = document.createElement('option');
+    opt.value = item;
+    opt.textContent = item;
+    el.appendChild(opt);
   });
 };
 
 
-// build the HTML for a single meal card
-export const createMealCard = (meal) => {
+const buildCard = (meal) => {
   const saved = isFavorite(meal.id);
+  const lang = getPreferences().language;
+  const detailsLabel = lang === 'nl' ? 'Details' : 'Details';
+  const saveLabel = saved
+    ? (lang === 'nl' ? 'Verwijder' : 'Remove')
+    : (lang === 'nl' ? 'Opslaan' : 'Save');
 
   return `
     <article class="meal-card" data-id="${meal.id}">
-      <img class="meal-card-img" src="${meal.image}" alt="${meal.name}" loading="lazy" />
-      <div class="meal-card-body">
-        <div class="meal-card-top">
-          <h3 class="meal-card-title">${meal.name}</h3>
-          <span class="meal-fav-icon">${saved ? '❤️' : '🤍'}</span>
+      <img src="${meal.image}" alt="${meal.name}" loading="lazy" />
+      <div class="card-body">
+        <div class="card-top">
+          <h3 class="card-title">${meal.name}</h3>
+          <span>${saved ? '❤️' : '🤍'}</span>
         </div>
-        <div class="meal-tags">
-          <span class="tag">🍽️ ${meal.category}</span>
-          <span class="tag">🌍 ${meal.area}</span>
-          <span class="tag">🏷️ ${meal.tags}</span>
-          <span class="tag">${meal.youtube ? '🎬 Video' : 'No video'}</span>
+        <div class="card-tags">
+          <span class="tag">${meal.category}</span>
+          <span class="tag">${meal.area}</span>
         </div>
-        <div class="meal-actions">
-          <button class="btn-details" data-action="details" data-id="${meal.id}">Details</button>
-          <button class="btn-save" data-action="favorite" data-id="${meal.id}">${saved ? 'Remove' : 'Save'}</button>
+        <div class="card-actions">
+          <button class="btn-details" data-action="details" data-id="${meal.id}">${detailsLabel}</button>
+          <button class="btn-save" data-action="favorite" data-id="${meal.id}">${saveLabel}</button>
         </div>
       </div>
     </article>
@@ -82,43 +82,38 @@ export const createMealCard = (meal) => {
 };
 
 
-// render a list of meals into a container
 export const renderMeals = (container, meals, emptyEl) => {
-  container.innerHTML = meals.map(createMealCard).join('');
-
-  // show or hide the empty state message
-  if (emptyEl) {
-    emptyEl.classList.toggle('hidden', meals.length > 0);
-  }
-
-  // observe each card so it animates when visible
-  container.querySelectorAll('.meal-card').forEach((card) => {
-    cardObserver.observe(card);
-  });
+  container.innerHTML = meals.map(buildCard).join('');
+  if (emptyEl) emptyEl.classList.toggle('hidden', meals.length > 0);
+  container.querySelectorAll('.meal-card').forEach((card) => observer.observe(card));
 };
 
 
-// show the detail modal for a meal
 export const renderModal = (meal) => {
+  const lang = getPreferences().language;
+  const instructionsLabel = lang === 'nl' ? 'Instructies' : 'Instructions';
+  const noVideoLabel = lang === 'nl' ? 'Geen video beschikbaar' : 'No video available';
+  const watchLabel = lang === 'nl' ? 'Video bekijken' : 'Watch video';
+
   const videoSection = meal.youtube
-    ? `<a class="modal-video-link" href="${meal.youtube}" target="_blank" rel="noreferrer">▶ Watch video</a>`
-    : `<p style="color: var(--text-muted); font-size: 0.875rem; margin-top: 0.5rem;">No video available</p>`;
+    ? `<a class="modal-video-link" href="${meal.youtube}" target="_blank" rel="noreferrer">▶ ${watchLabel}</a>`
+    : `<p style="color:var(--muted);font-size:0.875rem;margin-top:8px;">${noVideoLabel}</p>`;
 
   elements.modalBody.innerHTML = `
     <div class="modal-top">
       <img src="${meal.image}" alt="${meal.name}" />
       <div class="modal-info">
-        <h2 id="modal-title">${meal.name}</h2>
+        <h2>${meal.name}</h2>
         <div class="modal-tags">
-          <span>🍽️ ${meal.category}</span>
-          <span>🌍 ${meal.area}</span>
-          <span>🏷️ ${meal.tags}</span>
+          <span>${meal.category}</span>
+          <span>${meal.area}</span>
+          <span>${meal.tags}</span>
         </div>
         ${videoSection}
       </div>
     </div>
     <div class="modal-instructions">
-      <h3>Instructions</h3>
+      <h3>${instructionsLabel}</h3>
       <p>${meal.instructions}</p>
     </div>
   `;
@@ -127,38 +122,29 @@ export const renderModal = (meal) => {
 };
 
 
-// update the favorite count badge in the nav
 export const updateFavoriteCount = (favorites) => {
   elements.favCount.textContent = favorites.length;
   elements.clearFavorites.classList.toggle('hidden', favorites.length === 0);
 };
 
 
-// show or hide the loading spinner
-export const setLoading = (isLoading) => {
-  elements.loader.classList.toggle('hidden', !isLoading);
+export const setLoading = (loading) => {
+  elements.loader.classList.toggle('hidden', !loading);
 };
 
 
-// show a small toast message at the bottom
 export const showToast = (message) => {
   elements.toast.textContent = message;
   elements.toast.classList.remove('hidden');
-
-  setTimeout(() => {
-    elements.toast.classList.add('hidden');
-  }, 2500);
+  setTimeout(() => elements.toast.classList.add('hidden'), 2500);
 };
 
 
-// switch between browse and favorites views
-export const switchView = (viewName) => {
-  const showFavorites = viewName === 'favorites';
-
-  elements.browseView.classList.toggle('hidden', showFavorites);
-  elements.favoritesView.classList.toggle('hidden', !showFavorites);
-
+export const switchView = (view) => {
+  const isFav = view === 'favorites';
+  elements.browseView.classList.toggle('hidden', isFav);
+  elements.favoritesView.classList.toggle('hidden', !isFav);
   elements.navButtons.forEach((btn) => {
-    btn.classList.toggle('active', btn.dataset.view === viewName);
+    btn.classList.toggle('active', btn.dataset.view === view);
   });
 };

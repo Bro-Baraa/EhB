@@ -1,59 +1,57 @@
-#  Food Explorer
+# Food Explorer
 
-A single-page web app built with HTML, CSS and vanilla JavaScript. It uses the [TheMealDB API](https://www.themealdb.com/api.php) to let users explore meals, search, filter, and save favorites.
+Food Explorer is een single-page webapplicatie voor het vak Web Advanced.  
+Met deze app kan een gebruiker maaltijden zoeken, filteren, sorteren en opslaan als favoriet.
 
-This was made as a project for the Web Advanced course.
+De applicatie gebruikt data van TheMealDB API.
 
+## Functionaliteiten
 
+- Maaltijden laden via een externe API
+- Maaltijden tonen in een grid of lijstweergave
+- Zoeken op naam, categorie of keuken
+- Filteren op categorie
+- Filteren op keuken / land
+- Sorteren op naam, categorie of keuken
+- Details van een maaltijd bekijken in een popup
+- Favorieten opslaan en verwijderen
+- Favorieten bewaren met LocalStorage
+- Thema kiezen: donker of licht
+- Taal kiezen: Engels of Nederlands
+- Responsive layout voor desktop en mobiel
 
-# Features
+## Gebruikte API
 
-- Browse 80+ meals loaded from the API
-- Search by meal name, category or cuisine
-- Filter by category and cuisine
-- Sort A→Z, Z→A, by category, or by cuisine
-- All filters work together at the same time
-- Save and remove favorite meals (stored with LocalStorage)
-- User preferences saved between sessions: theme, language, grid/list view
-- Meal detail popup with instructions and YouTube link
-- Dark / light theme toggle
-- Responsive layout for desktop, tablet and mobile
+Ik gebruik TheMealDB API.
 
+Link: https://www.themealdb.com/api.php
 
+Gebruikte endpoints:
 
-# Installation
+| Endpoint | Gebruik |
+|---|---|
+| `search.php?f=a` tot `search.php?f=h` | maaltijden laden per beginletter |
+| `search.php?s=term` | maaltijden zoeken op naam |
+| `list.php?c=list` | categorieën ophalen |
+| `list.php?a=list` | keukens / landen ophalen |
+
+## Installatie
 
 ```bash
-git clone https://github.com/your-username/food-explorer.git
-cd food-explorer
 npm install
 npm run dev
 ```
 
-To build for production:
+Voor een productie-build:
+
 ```bash
 npm run build
 npm run preview
 ```
 
+## Projectstructuur
 
-
-# API
-
-This project uses the free [TheMealDB API](https://www.themealdb.com/api.php).
-
-| Endpoint | Usage |
-|---|---|
-| `search.php?f=a` | Load meals starting with a letter |
-| `search.php?s=term` | Search meals by name |
-| `list.php?c=list` | Get all categories |
-| `list.php?a=list` | Get all cuisines |
-
-
-
-# Folder structure
-
-```
+```text
 food-explorer/
 ├── index.html
 ├── package.json
@@ -63,97 +61,112 @@ food-explorer/
     ├── css/
     │   └── main.css
     └── js/
-        ├── api.js          → fetch and normalize API data
-        ├── favorites.js    → save/remove favorites
-        ├── filters.js      → filter and sort logic
-        ├── main.js         → app entry point, events
-        ├── preferences.js  → theme, language, view preference
-        ├── storage.js      → localStorage helper functions
-        └── ui.js           → render cards, modal, toast
+        ├── api.js
+        ├── favorites.js
+        ├── filters.js
+        ├── main.js
+        ├── preferences.js
+        ├── storage.js
+        └── ui.js
 ```
 
+## Technische vereisten
 
+### DOM-manipulatie
 
-# Technical requirements
+| Vereiste | Bestand | Regels | Uitleg |
+|---|---|---:|---|
+| Elementen selecteren | `src/js/ui.js` | 5-30 | In het `elements` object worden de HTML-elementen één keer geselecteerd met `querySelector` en `querySelectorAll`. |
+| Elementen aanpassen | `src/js/ui.js` | 44-51, 85-88, 102-121 | Select-opties, maaltijdkaarten en de popup worden via JavaScript aangepast. |
+| Events koppelen | `src/js/main.js` | 137-213 | In `bindEvents()` worden events gekoppeld aan zoeken, filters, sorteren, navigatie, favorieten en de popup. |
 
+### Moderne JavaScript
 
-# DOM manipulation
+| Vereiste | Bestand | Regels | Uitleg |
+|---|---|---:|---|
+| `const` gebruiken | `src/js/api.js` | 1-2 | `BASE_URL` en `INITIAL_LETTERS` zijn vaste waarden. |
+| Template literals | `src/js/ui.js` | 63-81, 98-119 | De HTML voor kaarten en de popup wordt opgebouwd met backticks. |
+| Iteratie over arrays | `src/js/api.js` | 22-25 | Met `map`, `flatMap` en `Array.from` wordt API-data verwerkt. |
+| Array methods | `src/js/filters.js` | 4-17 | `filter()` en `sort()` worden gebruikt voor zoeken, filteren en sorteren. |
+| Arrow functions | meerdere bestanden | o.a. `filters.js` 1 en 20 | De meeste functies zijn geschreven als arrow functions. |
+| Ternary operator | `src/js/ui.js` | 59-61, 69, 98-100 | Wordt gebruikt voor knoptekst, icoontjes en fallback-content. |
+| Callback functions | `src/js/filters.js` | 20-25 | `debounce()` krijgt een callback mee en voert die later uit. |
+| Promises | `src/js/api.js`, `src/js/main.js` | `api.js` 23, `main.js` 222-226 | `Promise.all()` haalt meerdere API-resultaten tegelijk op. |
+| Async / await | `src/js/api.js`, `src/js/main.js` | `api.js` 4-7, `main.js` 216-238 | API-calls worden asynchroon uitgevoerd. |
+| Observer API | `src/js/ui.js` | 33-41, 88 | `IntersectionObserver` wordt gebruikt om kaarten zichtbaar te maken bij scrollen. |
 
-| What | File | Line | How |
-|---|---|---|---|
-| Element selection | `src/js/ui.js` | 3–30 | `elements` object uses `querySelector` and `querySelectorAll` |
-| DOM manipulation | `src/js/ui.js` | 41–47, 76–85 | `fillSelect` creates options, `renderMeals` writes cards to the page |
-| Event listeners | `src/js/main.js` | 84–143 | `bindEvents()` adds all listeners for buttons, filters, search, modal |
+### Data en API
 
+| Vereiste | Bestand | Regels | Uitleg |
+|---|---|---:|---|
+| Fetch gebruiken | `src/js/api.js` | 4-7 | `fetch()` haalt data op van TheMealDB. |
+| JSON verwerken | `src/js/api.js` | 10-19 | `normalizeMeal()` zet de ruwe API-data om naar een eenvoudiger object. |
+| Minstens 20 objecten | `src/js/api.js` | 21-26 | De app haalt maaltijden op via meerdere beginletters en beperkt het resultaat tot 80 unieke maaltijden. |
 
+### Opslag en validatie
 
-# JavaScript concepts
+| Vereiste | Bestand | Regels | Uitleg |
+|---|---|---:|---|
+| LocalStorage | `src/js/storage.js` | 1-13 | Algemene functies om data op te slaan en te lezen. |
+| Favorieten opslaan | `src/js/favorites.js` | 3-20 | Favorieten worden bewaard tussen sessies. |
+| Gebruikersvoorkeuren | `src/js/preferences.js` | 3-17 | Thema, taal en weergave worden opgeslagen. |
+| Formuliervalidatie | `src/js/main.js` | 68-75 | Bij een zoekterm van 1 karakter krijgt de gebruiker een melding. |
 
-| Concept | File | Line | How |
-|---|---|---|---|
-| Constants (`const`) | `src/js/api.js` | 1–2 | `BASE_URL` and `INITIAL_LETTERS` |
-| Constants | `src/js/favorites.js` | 3 | `FAVORITES_KEY` for LocalStorage |
-| Template literals | `src/js/ui.js` | 53–73 | Card HTML is built with backtick strings |
-| Template literals | `src/js/api.js` | 5 | Fetch URL built with template literal |
-| Array iteration | `src/js/api.js` | 22 | `INITIAL_LETTERS.map(...)` to make fetch requests |
-| Array iteration | `src/js/ui.js` | 43–47 | `forEach` to create select options |
-| Array methods | `src/js/filters.js` | 4–17 | `.filter()` and `.sort()` for search/filter/sort |
-| Array methods | `src/js/api.js` | 24 | `.flatMap()` and `.map()` to process API results |
-| Arrow functions | `src/js/filters.js` | 1, 20 | All functions use arrow syntax |
-| Arrow functions | `src/js/api.js` | 4, 10, 21 | `fetchJSON`, `normalizeMeal`, etc. |
-| Ternary operator | `src/js/ui.js` | 59, 65, 69 | Favorite icon and button text |
-| Ternary operator | `src/js/main.js` | 34 | "meal" vs "meals" in results count |
-| Callback functions | `src/js/main.js` | 62 | `handleSearch` passed as callback to debounce |
-| Callback functions | `src/js/ui.js` | 33–38 | IntersectionObserver callback |
-| Promises | `src/js/api.js` | 23 | `Promise.all()` to fetch letters in parallel |
-| Promises | `src/js/main.js` | 148–152 | `Promise.all()` for initial data load |
-| Async / Await | `src/js/api.js` | 4–8, 21–27 | All fetch functions are async |
-| Async / Await | `src/js/main.js` | 145, 62 | `init()` and `handleSearch` are async |
-| Observer API | `src/js/ui.js` | 32–39 | `IntersectionObserver` animates cards on scroll |
+### Styling en layout
 
+| Vereiste | Bestand | Regels | Uitleg |
+|---|---|---:|---|
+| Basis CSS | `src/css/main.css` | volledig bestand | De interface is gestyled met eigen CSS. |
+| Flexbox | `src/css/main.css` | 56-67, 184-194 | Header en controls gebruiken flexbox. |
+| CSS Grid | `src/css/main.css` | 300-307 | Maaltijdkaarten worden in een grid getoond. |
+| Animaties | `src/css/main.css` | 323-328, 441-445, 525-529 | Kaarten, loader en popup hebben eenvoudige animaties. |
+| Responsive design | `src/css/main.css` | 643-674 | De layout past zich aan voor kleinere schermen. |
 
-# Data & API
+### Tooling
 
-| Concept | File | Line | How |
-|---|---|---|---|
-| Fetch | `src/js/api.js` | 5 | `fetch()` to call TheMealDB API |
-| JSON manipulation | `src/js/api.js` | 10–19 | `normalizeMeal()` turns raw API data into a clean object |
+| Vereiste | Bestand | Uitleg |
+|---|---|---|
+| Vite | `package.json` | De scripts `dev`, `build` en `preview` gebruiken Vite. |
+| Gescheiden bestanden | projectstructuur | HTML, CSS en JavaScript staan apart in de juiste mappen. |
 
+## Screenshots
 
-# Storage & validation
+Voeg hier screenshots toe van:
 
-| Concept | File | Line | How |
-|---|---|---|---|
-| Form validation | `src/js/main.js` | 65–68 | Shows toast if search term is less than 2 characters |
-| Form validation | `index.html` | 52 | `minlength="2"` attribute on the search input |
-| LocalStorage | `src/js/storage.js` | 1–13 | `getStorage` and `setStorage` helper functions |
-| LocalStorage | `src/js/favorites.js` | 5, 16 | Favorites saved and loaded from localStorage |
-| LocalStorage | `src/js/preferences.js` | 10, 14–15 | Preferences (theme, language, view) saved between sessions |
+1. De browse-pagina
+2. De filter- of zoekfunctie
+3. De favorietenpagina
+4. De detail-popup
+5. De mobiele weergave
 
+Voorbeeld:
 
+```md
+![Browse page](./screenshots/browse.png)
+![Favorites page](./screenshots/favorites.png)
+```
 
-# Styling & layout
+## AI-gebruik
 
-| Concept | File | Where | How |
-|---|---|---|---|
-| CSS Flexbox | `src/css/main.css` | `.header`, `.hero`, `.controls-bar` | Used for header and control bar layout |
-| CSS Grid | `src/css/main.css` | `.meals-grid`, `.modal-top` | Card grid and modal layout |
-| Animations | `src/css/main.css` | `@keyframes spin` | Loading spinner |
-| Animations | `src/css/main.css` | `@keyframes modalIn` | Modal entrance animation |
-| Animations | `src/css/main.css` | `@keyframes toastIn` | Toast fade-in |
-| Hover effects | `src/css/main.css` | `.meal-card:hover` | Card lifts and image zooms on hover |
-| Responsive | `src/css/main.css` | `@media (max-width: 820px)` | Tablet layout |
-| Responsive | `src/css/main.css` | `@media (max-width: 480px)` | Mobile layout |
+Ik heb AI gebruikt als ondersteuning tijdens dit project.
 
+AI werd gebruikt voor:
 
+- ideeën voor de structuur van de applicatie;
+- hulp bij het controleren van fouten;
+- uitleg over JavaScript-concepten zoals `async/await`, `LocalStorage`, `filter()` en `sort()`;
+- hulp bij het duidelijker maken van de README.
 
+De code is daarna door mij nagekeken, getest en aangepast.  
+Ik kan uitleggen hoe de belangrijkste onderdelen werken, zoals het ophalen van API-data, het filteren en sorteren van maaltijden, het opslaan van favorieten en het gebruik van LocalStorage.
 
+Het AI-chatlog wordt toegevoegd bij de bronnen van de indiening.
 
-# Sources
+## Bronnen
 
 - TheMealDB API: https://www.themealdb.com/api.php
 - MDN Fetch API: https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API
 - MDN LocalStorage: https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage
 - MDN IntersectionObserver: https://developer.mozilla.org/en-US/docs/Web/API/IntersectionObserver
-- MDN Array methods: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array
-- Vite: https://vitejs.dev/guide/
+- MDN Array: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array
+- Vite Guide: https://vite.dev/guide/

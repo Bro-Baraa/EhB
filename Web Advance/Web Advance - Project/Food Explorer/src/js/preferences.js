@@ -11,7 +11,7 @@ export const getPreferences = () => ({ ...defaultPreferences, ...getStorage(PREF
 
 export const savePreference = (key, value) => {
   const preferences = getPreferences();
-  const updatedPreferences = { ...preferences, [key]: value };
-  setStorage(PREF_KEY, updatedPreferences);
-  return updatedPreferences;
+  const updated = { ...preferences, [key]: value };
+  setStorage(PREF_KEY, updated);
+  return updated;
 };
