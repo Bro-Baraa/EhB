@@ -38,18 +38,17 @@ Gebruikte endpoints:
 
 ## Installatie
 
-
+```bash
 npm install
 npm run dev
-
+```
 
 Voor een productie-build:
 
-
+```bash
 npm run build
 npm run preview
-
-
+```
 
 
 ## Projectstructuur
