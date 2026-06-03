@@ -160,7 +160,7 @@ AI werd gebruikt voor:
 De code is daarna door mij nagekeken, getest en aangepast.  
 Ik kan uitleggen hoe de belangrijkste onderdelen werken, zoals het ophalen van API-data, het filteren en sorteren van maaltijden, het opslaan van favorieten en het gebruik van LocalStorage.
 
-Het AI-chatlog wordt toegevoegd bij de bronnen van de indiening.
+
 
 ## Bronnen
 
