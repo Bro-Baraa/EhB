@@ -21,7 +21,7 @@
 
     <div class="header-right">
       <button id="theme-toggle" class="theme-btn">Dark</button>
-      <select id="lang-select">
+    </select id="lang-select">
         <option value="en">EN</option>
         <option value="nl">NL</option>
       </select>
@@ -64,13 +64,13 @@
         </form>
 
         <div class="filters">
-          <select id="filter-category" class="filter-select">
+        </select id="filter-category" class="filter-select">
             <option value="" data-en="All Categories" data-nl="Alle categorieën">All Categories</option>
           </select>
-          <select id="filter-area" class="filter-select">
+        </select id="filter-area" class="filter-select">
             <option value="" data-en="All Cuisines" data-nl="Alle keukens">All Cuisines</option>
           </select>
-          <select id="sort-select" class="filter-select">
+        </select id="sort-select" class="filter-select">
             <option value="name-asc">A → Z</option>
             <option value="name-desc">Z → A</option>
             <option value="category" data-en="By Category" data-nl="Op categorie">By Category</option>
@@ -84,6 +84,7 @@
         </div>
       </div>
 
+
       <div class="results-bar">
         <span id="results-count" class="results-text">Loading...</span>
         <button id="reset-filters" class="reset-btn hidden" type="button" data-en="Reset filters" data-nl="Filters wissen">Reset filters</button>
@@ -96,7 +97,7 @@
         <p data-en="Loading meals..." data-nl="Maaltijden laden...">Loading meals...</p>
       </div>
 
-      <div id="scroll-trigger" style="height: 10px; margin-top: 10px;"></div>
+      </div id="scroll-trigger" style="height: 10px; margin-top: 10px;"></div>
 
       <div id="empty-state" class="empty-state hidden">
         <p class="empty-icon">🍽️</p>
@@ -126,6 +127,7 @@
 
   </main>
 
+  
   <div id="modal" class="modal hidden">
     <div class="modal-backdrop" data-close="modal"></div>
     <div class="modal-box">

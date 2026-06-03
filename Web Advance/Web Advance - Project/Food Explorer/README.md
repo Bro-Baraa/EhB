@@ -7,18 +7,18 @@ De applicatie gebruikt data van TheMealDB API.
 
 ## Functionaliteiten
 
-- Maaltijden laden via een externe API
-- Maaltijden tonen in een grid of lijstweergave
-- Zoeken op naam, categorie of keuken
-- Filteren op categorie
-- Filteren op keuken / land
-- Sorteren op naam, categorie of keuken
-- Details van een maaltijd bekijken in een popup
-- Favorieten opslaan en verwijderen
-- Favorieten bewaren met LocalStorage
-- Thema kiezen: donker of licht
-- Taal kiezen: Engels of Nederlands
-- Responsive layout voor desktop en mobiel
+- 1 - Maaltijden laden via een externe API
+- 2 - Maaltijden tonen in een grid of lijstweergave
+- 3 - Zoeken op naam, categorie of keuken
+- 4 - Filteren op categorie
+- 5 - Filteren op keuken / land
+- 6 - Sorteren op naam, categorie of keuken
+- 7 - Details van een maaltijd bekijken in een popup
+- 8 - Favorieten opslaan en verwijderen
+- 9 - Favorieten bewaren met LocalStorage
+- 10 - Thema kiezen: donker of licht
+- 11 - Taal kiezen: Engels of Nederlands
+- 12 - Responsive layout voor desktop en mobiel
 
 ## Gebruikte API
 
@@ -35,19 +35,22 @@ Gebruikte endpoints:
 | `list.php?c=list` | categorieën ophalen |
 | `list.php?a=list` | keukens / landen ophalen |
 
+
 ## Installatie
 
-```bash
+
 npm install
 npm run dev
-```
+
 
 Voor een productie-build:
 
-```bash
+
 npm run build
 npm run preview
-```
+
+
+
 
 ## Projectstructuur
 
@@ -70,6 +73,9 @@ food-explorer/
         └── ui.js
 ```
 
+
+
+
 ## Technische vereisten
 
 ### DOM-manipulatie
@@ -79,6 +85,9 @@ food-explorer/
 | Elementen selecteren | `src/js/ui.js` | 5-30 | In het `elements` object worden de HTML-elementen één keer geselecteerd met `querySelector` en `querySelectorAll`. |
 | Elementen aanpassen | `src/js/ui.js` | 44-51, 85-88, 102-121 | Select-opties, maaltijdkaarten en de popup worden via JavaScript aangepast. |
 | Events koppelen | `src/js/main.js` | 137-213 | In `bindEvents()` worden events gekoppeld aan zoeken, filters, sorteren, navigatie, favorieten en de popup. |
+
+
+
 
 ### Moderne JavaScript
 
@@ -95,6 +104,9 @@ food-explorer/
 | Async / await | `src/js/api.js`, `src/js/main.js` | `api.js` 4-7, `main.js` 216-238 | API-calls worden asynchroon uitgevoerd. |
 | Observer API | `src/js/ui.js` | 33-41, 88 | `IntersectionObserver` wordt gebruikt om kaarten zichtbaar te maken bij scrollen. |
 
+
+
+
 ### Data en API
 
 | Vereiste | Bestand | Regels | Uitleg |
@@ -102,6 +114,8 @@ food-explorer/
 | Fetch gebruiken | `src/js/api.js` | 4-7 | `fetch()` haalt data op van TheMealDB. |
 | JSON verwerken | `src/js/api.js` | 10-19 | `normalizeMeal()` zet de ruwe API-data om naar een eenvoudiger object. |
 | Minstens 20 objecten | `src/js/api.js` | 21-26 | De app haalt maaltijden op via meerdere beginletters en beperkt het resultaat tot 80 unieke maaltijden. |
+
+
 
 ### Opslag en validatie
 
@@ -111,6 +125,8 @@ food-explorer/
 | Favorieten opslaan | `src/js/favorites.js` | 3-20 | Favorieten worden bewaard tussen sessies. |
 | Gebruikersvoorkeuren | `src/js/preferences.js` | 3-17 | Thema, taal en weergave worden opgeslagen. |
 | Formuliervalidatie | `src/js/main.js` | 68-75 | Bij een zoekterm van 1 karakter krijgt de gebruiker een melding. |
+
+
 
 ### Styling en layout
 
@@ -122,12 +138,18 @@ food-explorer/
 | Animaties | `src/css/main.css` | 323-328, 441-445, 525-529 | Kaarten, loader en popup hebben eenvoudige animaties. |
 | Responsive design | `src/css/main.css` | 643-674 | De layout past zich aan voor kleinere schermen. |
 
+
+
+
 ### Tooling
 
 | Vereiste | Bestand | Uitleg |
 |---|---|---|
 | Vite | `package.json` | De scripts `dev`, `build` en `preview` gebruiken Vite. |
 | Gescheiden bestanden | projectstructuur | HTML, CSS en JavaScript staan apart in de juiste mappen. |
+
+
+
 
 ## Screenshots
 
@@ -145,6 +167,8 @@ Voorbeeld:
 ![Browse page](./screenshots/browse.png)
 ![Favorites page](./screenshots/favorites.png)
 ```
+
+
 
 ## AI-gebruik
 
