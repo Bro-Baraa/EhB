@@ -1,5 +1,11 @@
-import { loadAreas, loadCategories, loadInitialMeals, searchMealsFromApi } from './api.js';
-import { debounce, applyFilters } from './filters.js';
+import {
+  loadAreas,
+  loadCategories,
+  loadInitialMeals,
+  searchMealsFromApi,
+} from './api.js';
+
+import { applyFilters, debounce } from './filters.js';
 import { clearFavorites, getFavorites, toggleFavorite } from './favorites.js';
 import { getPreferences, savePreference } from './preferences.js';
 
@@ -14,8 +20,6 @@ import {
   updateFavoriteCount,
 } from './ui.js';
 
-
-
 let allMeals = [];
 let visibleMeals = [];
 
@@ -26,24 +30,15 @@ const state = {
   sortBy: 'name-asc',
 };
 
-
-
-
-// Find a meal in all meals or favorites.
+// Find a meal by id.
 const findMeal = (id) => {
   const favorites = getFavorites();
   const meals = [...allMeals, ...favorites];
 
-
-
   return meals.find((meal) => meal.id === id);
 };
 
-
-
-
-
-// Check if filters are used.
+// Check if the user changed filters.
 const hasActiveFilters = () => {
   return (
     state.searchTerm !== '' ||
@@ -53,36 +48,20 @@ const hasActiveFilters = () => {
   );
 };
 
-
-
-
-
-
-
-
-// Show meals after search, filters and sorting.
+// Update the meals on the page.
 const updateResults = () => {
   visibleMeals = applyFilters(allMeals, state);
 
   renderMeals(elements.mealsContainer, visibleMeals, elements.emptyState);
 
-
   const language = getPreferences().language;
-  const text = language === 'nl' ? 'maaltijden gevonden' : 'meals found';
+  const resultText = language === 'nl' ? 'maaltijden gevonden' : 'meals found';
 
-
-  elements.resultsCount.textContent = `${visibleMeals.length} ${text}`;
+  elements.resultsCount.textContent = `${visibleMeals.length} ${resultText}`;
   elements.resetFilters.classList.toggle('hidden', !hasActiveFilters());
 };
 
-
-
-
-
-
-
-
-// Show favorite meals.
+// Update the favorites page.
 const renderFavorites = () => {
   const favorites = getFavorites();
 
@@ -90,12 +69,7 @@ const renderFavorites = () => {
   renderMeals(elements.favoritesContainer, favorites, elements.favoritesEmpty);
 };
 
-
-
-
-
-
-// Handle buttons inside meal cards.
+// Handle details and favorite buttons.
 const handleCardClick = (event) => {
   const button = event.target.closest('button[data-action]');
 
@@ -103,7 +77,8 @@ const handleCardClick = (event) => {
     return;
   }
 
-  const meal = findMeal(button.dataset.id);
+  const mealId = button.dataset.id;
+  const meal = findMeal(mealId);
 
   if (!meal) {
     return;
@@ -114,28 +89,28 @@ const handleCardClick = (event) => {
     return;
   }
 
+  if (button.dataset.action === 'favorite') {
+    const result = toggleFavorite(meal);
+    const language = getPreferences().language;
 
-  const result = toggleFavorite(meal);
+    updateResults();
+    renderFavorites();
 
-  updateResults();
-  renderFavorites();
-
-  const language = getPreferences().language;
-
-  let message;
-
-
-  if (result.added) {
-    message = language === 'nl' ? 'Opgeslagen als favoriet ❤️' : 'Saved to favorites ❤️';
-  } else {
-    message = language === 'nl' ? 'Verwijderd uit favorieten' : 'Removed from favorites';
+    if (result.added) {
+      showToast(
+        language === 'nl'
+          ? 'Opgeslagen als favoriet ❤️'
+          : 'Saved to favorites ❤️'
+      );
+    } else {
+      showToast(
+        language === 'nl'
+          ? 'Verwijderd uit favorieten'
+          : 'Removed from favorites'
+      );
+    }
   }
-
-  showToast(message);
 };
-
-
-
 
 // Search meals.
 const handleSearch = debounce(async () => {
@@ -143,13 +118,14 @@ const handleSearch = debounce(async () => {
   const language = getPreferences().language;
 
   if (value !== '' && value.length < 2) {
-    const message = language === 'nl' ? 'Typ minstens 2 tekens' : 'Please type at least 2 characters';
-    showToast(message);
+    showToast(
+      language === 'nl'
+        ? 'Typ minstens 2 tekens'
+        : 'Please type at least 2 characters'
+    );
+
     return;
   }
-
-
-
 
   state.searchTerm = value;
   elements.searchClear.classList.toggle('hidden', value === '');
@@ -169,18 +145,14 @@ const handleSearch = debounce(async () => {
 
       allMeals = Array.from(mealMap.values());
     } catch (error) {
-      console.warn(error);
+      console.warn('Search failed:', error);
     }
   }
 
   updateResults();
 }, 350);
 
-
-
-
-
-// Reset all filters.
+// Reset search and filters.
 const resetFilters = () => {
   state.searchTerm = '';
   state.category = '';
@@ -197,24 +169,18 @@ const resetFilters = () => {
   updateResults();
 };
 
-
-
-
-
-// Change text by selected language.
+// Change page text language.
 const applyLanguage = (language) => {
   const textElements = document.querySelectorAll('[data-en]');
 
   textElements.forEach((element) => {
-    element.textContent = language === 'nl' ? element.dataset.nl : element.dataset.en;
+    element.textContent =
+      language === 'nl' ? element.dataset.nl : element.dataset.en;
   });
 
-  elements.searchInput.placeholder = language === 'nl'
-    ? 'Maaltijden zoeken...'
-    : 'Search meals...';
+  elements.searchInput.placeholder =
+    language === 'nl' ? 'Maaltijden zoeken...' : 'Search meals...';
 };
-
-
 
 // Apply saved theme, language and view.
 const applyPreferences = () => {
@@ -226,9 +192,11 @@ const applyPreferences = () => {
 
   if (themeButton) {
     if (preferences.theme === 'dark') {
-      themeButton.textContent = preferences.language === 'nl' ? 'Licht' : 'Light';
+      themeButton.textContent =
+        preferences.language === 'nl' ? 'Licht' : 'Light';
     } else {
-      themeButton.textContent = preferences.language === 'nl' ? 'Donker' : 'Dark';
+      themeButton.textContent =
+        preferences.language === 'nl' ? 'Donker' : 'Dark';
     }
   }
 
@@ -244,9 +212,46 @@ const applyPreferences = () => {
   elements.listBtn.classList.toggle('active', listView);
 };
 
+// Handle newsletter form.
+const handleNewsletterSubmit = (event) => {
+  event.preventDefault();
 
+  const emailInput = document.querySelector('#newsletter-email');
+  const feedback = document.querySelector('#form-feedback');
+  const language = getPreferences().language;
 
+  if (!emailInput || !feedback) {
+    return;
+  }
 
+  const email = emailInput.value.trim();
+
+  if (email === '') {
+    feedback.textContent =
+      language === 'nl'
+        ? 'Vul een e-mailadres in.'
+        : 'Please fill in an email address.';
+
+    feedback.classList.remove('hidden');
+    return;
+  }
+
+  if (!email.includes('@') || !email.includes('.')) {
+    feedback.textContent =
+      language === 'nl'
+        ? 'Gebruik een geldig e-mailadres.'
+        : 'Please use a valid email address.';
+
+    feedback.classList.remove('hidden');
+    return;
+  }
+
+  feedback.textContent =
+    language === 'nl' ? 'Bedankt voor je inschrijving!' : 'Thanks for joining!';
+
+  feedback.classList.remove('hidden');
+  emailInput.value = '';
+};
 
 // Add all events.
 const bindEvents = () => {
@@ -296,7 +301,11 @@ const bindEvents = () => {
 
   elements.clearFavorites.addEventListener('click', () => {
     const language = getPreferences().language;
-    const question = language === 'nl' ? 'Alle favorieten verwijderen?' : 'Remove all favorites?';
+
+    const question =
+      language === 'nl'
+        ? 'Alle favorieten verwijderen?'
+        : 'Remove all favorites?';
 
     if (!window.confirm(question)) {
       return;
@@ -306,8 +315,7 @@ const bindEvents = () => {
     updateResults();
     renderFavorites();
 
-    const message = language === 'nl' ? 'Favorieten gewist' : 'Favorites cleared';
-    showToast(message);
+    showToast(language === 'nl' ? 'Favorieten gewist' : 'Favorites cleared');
   });
 
   const themeButton = document.querySelector('#theme-toggle');
@@ -327,8 +335,11 @@ const bindEvents = () => {
 
     applyPreferences();
     updateResults();
+    renderFavorites();
 
-    const message = event.target.value === 'nl' ? 'Taal opgeslagen' : 'Language saved';
+    const message =
+      event.target.value === 'nl' ? 'Taal opgeslagen' : 'Language saved';
+
     showToast(message);
   });
 
@@ -357,11 +368,13 @@ const bindEvents = () => {
       elements.modal.classList.add('hidden');
     }
   });
+
+  const newsletterForm = document.querySelector('#newsletter-form');
+
+  if (newsletterForm) {
+    newsletterForm.addEventListener('submit', handleNewsletterSubmit);
+  }
 };
-
-
-
-
 
 // Start the app.
 const init = async () => {
@@ -380,7 +393,6 @@ const init = async () => {
 
     const categories = data[1];
     const areas = data[2];
-
     const language = getPreferences().language;
 
     fillSelect(
@@ -398,13 +410,12 @@ const init = async () => {
     updateResults();
     renderFavorites();
   } catch (error) {
-    console.error(error);
-    elements.resultsCount.textContent = 'Could not load meals. Please try again later.';
+    console.error('App failed:', error);
+    elements.resultsCount.textContent =
+      'Could not load meals. Please try again later.';
   } finally {
     setLoading(false);
   }
 };
-
-
 
 init();
