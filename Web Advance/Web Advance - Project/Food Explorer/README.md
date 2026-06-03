@@ -1,4 +1,4 @@
-# 🍴 Food Explorer
+#  Food Explorer
 
 A single-page web app built with HTML, CSS and vanilla JavaScript. It uses the [TheMealDB API](https://www.themealdb.com/api.php) to let users explore meals, search, filter, and save favorites.
 
@@ -147,14 +147,6 @@ food-explorer/
 
 
 
-# Screenshots
-
-*(Add screenshots here after running the project)*
-
-
-# AI usage
-
-I used Claude (claude.ai) to help with parts of this project. The full chatlog is included with this submission as required. All code has been reviewed and I understand how everything works.
 
 
 # Sources
