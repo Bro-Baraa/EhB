@@ -36,7 +36,19 @@
       <p class="hero-sub" data-en="Search, filter and save your favourite recipes in one place." data-nl="Zoek, filter en sla je favoriete recepten op één plek op.">Search, filter and save your favourite recipes in one place.</p>
     </section>
 
-    <!-- browse page -->
+    <section class="newsletter-wrap">
+      <form id="newsletter-form" class="newsletter-form" novalidate>
+        <input 
+          id="newsletter-email" 
+          type="email" 
+          placeholder="Subscribe to updates..." 
+          class="search-input"
+        />
+        <button type="submit" class="toggle-btn" data-en="Join" data-nl="Meedoen">Join</button>
+      </form>
+      <span id="form-feedback" class="results-text hidden"></span>
+    </section>
+
     <section id="view-browse" class="view">
 
       <div class="controls">
@@ -84,6 +96,8 @@
         <p data-en="Loading meals..." data-nl="Maaltijden laden...">Loading meals...</p>
       </div>
 
+      <div id="scroll-trigger" style="height: 10px; margin-top: 10px;"></div>
+
       <div id="empty-state" class="empty-state hidden">
         <p class="empty-icon">🍽️</p>
         <p class="empty-title" data-en="No meals found" data-nl="Geen maaltijden gevonden">No meals found</p>
@@ -92,7 +106,6 @@
 
     </section>
 
-    <!-- favorites page -->
     <section id="view-favorites" class="view hidden">
       <div class="fav-header">
         <div>
@@ -113,7 +126,6 @@
 
   </main>
 
-  <!-- popup modal -->
   <div id="modal" class="modal hidden">
     <div class="modal-backdrop" data-close="modal"></div>
     <div class="modal-box">
@@ -122,7 +134,6 @@
     </div>
   </div>
 
-  <!-- small toast message -->
   <div id="toast" class="toast hidden"></div>
 
   <script type="module" src="/src/js/main.js"></script>
