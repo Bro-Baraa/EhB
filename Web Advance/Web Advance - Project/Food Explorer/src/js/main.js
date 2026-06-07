@@ -1,12 +1,13 @@
 import {
-  loadAreas,
-  loadCategories,
-  loadInitialMeals,
-  searchMealsFromApi,
+  getInitialMeals,
+  getCategories,
+  getAreas,
+  searchMealsByName,
+  getMealById
 } from './api.js';
 
-import { applyFilters, debounce } from './filters.js';
-import { clearFavorites, getFavorites, toggleFavorite } from './favorites.js';
+import { filterMeals, sortMeals, debounce } from './filters.js';
+import { getFavIds, isFav, toggleFav, clearAllFavs, loadFavMeals } from './favorites.js';
 import { getPreferences, savePreference } from './preferences.js';
 
 import {
@@ -20,38 +21,58 @@ import {
   updateFavoriteCount,
 } from './ui.js';
 
+// ============================================
+// STATE
+// ============================================
+
 let allMeals = [];
 let visibleMeals = [];
-let categoriesList = [];   // store raw categories
-let areasList = [];        // store raw areas
+let categoriesList = [];
+let areasList = [];
 
 const state = {
   searchTerm: '',
   category: '',
   area: '',
-  sortBy: 'name-asc',
+  sortBy: 'name',
 };
 
-// Find a meal by id.
-const findMeal = (id) => {
-  const favorites = getFavorites();
-  const meals = [...allMeals, ...favorites];
-  return meals.find((meal) => meal.id === id);
+// ============================================
+// HELPERS
+// ============================================
+
+// Zoek een meal in allMeals of haal van API
+const findMeal = async (id) => {
+  let meal = allMeals.find(m => m.id === id);
+  if (meal) return meal;
+  
+  try {
+    meal = await getMealById(id);
+    if (meal) allMeals.push(meal);
+    return meal;
+  } catch (err) {
+    console.log('Meal not found:', err);
+    return null;
+  }
 };
 
-// Check if the user changed filters.
 const hasActiveFilters = () => {
-  return (
-    state.searchTerm !== '' ||
-    state.category !== '' ||
-    state.area !== '' ||
-    state.sortBy !== 'name-asc'
-  );
+  return state.searchTerm !== '' ||
+         state.category !== '' ||
+         state.area !== '' ||
+         state.sortBy !== 'name';
 };
 
-// Update the meals on the page.
+// ============================================
+// UPDATE BROWSE VIEW
+// ============================================
+
 const updateResults = () => {
-  visibleMeals = applyFilters(allMeals, state);
+  // Filteren EN sorteren
+  let filtered = filterMeals(allMeals, state.searchTerm, state.category, state.area);
+  let sorted = sortMeals(filtered, state.sortBy);
+  visibleMeals = sorted;
+  
   renderMeals(elements.mealsContainer, visibleMeals, elements.emptyState);
 
   const language = getPreferences().language;
@@ -60,47 +81,81 @@ const updateResults = () => {
   elements.resetFilters.classList.toggle('hidden', !hasActiveFilters());
 };
 
-// Update the favorites page.
-const renderFavorites = () => {
-  const favorites = getFavorites();
-  updateFavoriteCount(favorites);
-  renderMeals(elements.favoritesContainer, favorites, elements.favoritesEmpty);
+// ============================================
+// UPDATE FAVORITES VIEW
+// ============================================
+
+const renderFavorites = async () => {
+  setLoading(true);
+  try {
+    const favorites = await loadFavMeals();
+    updateFavoriteCount(favorites.length);
+    renderMeals(elements.favoritesContainer, favorites, elements.favoritesEmpty);
+  } catch (err) {
+    console.log('Fav error:', err);
+    showToast('Could not load favorites');
+  } finally {
+    setLoading(false);
+  }
 };
 
-// Handle details and favorite buttons.
-const handleCardClick = (event) => {
+// ============================================
+// HANDLE CARD CLICKS
+// ============================================
+
+const handleCardClick = async (event) => {
   const button = event.target.closest('button[data-action]');
   if (!button) return;
 
   const mealId = button.dataset.id;
-  const meal = findMeal(mealId);
-  if (!meal) return;
+  if (!mealId) return;
 
   if (button.dataset.action === 'details') {
-    renderModal(meal);
+    setLoading(true);
+    try {
+      const meal = await findMeal(mealId);
+      if (meal) {
+        renderModal(meal);
+      } else {
+        showToast('Could not load details');
+      }
+    } catch (err) {
+      console.log('Details error:', err);
+      showToast('Error loading details');
+    } finally {
+      setLoading(false);
+    }
     return;
   }
 
   if (button.dataset.action === 'favorite') {
-    const result = toggleFavorite(meal);
+    const result = toggleFav(mealId);
     const language = getPreferences().language;
-    updateResults();
-    renderFavorites();
+    
+    // Update UI van de knop
     if (result.added) {
+      button.textContent = language === 'nl' ? 'Verwijder' : 'Remove';
       showToast(language === 'nl' ? 'Opgeslagen als favoriet ❤️' : 'Saved to favorites ❤️');
     } else {
+      button.textContent = language === 'nl' ? 'Opslaan' : 'Save';
       showToast(language === 'nl' ? 'Verwijderd uit favorieten' : 'Removed from favorites');
     }
+    
+    updateResults();
+    renderFavorites();
   }
 };
 
-// Search meals.
+// ============================================
+// SEARCH
+// ============================================
+
 const handleSearch = debounce(async () => {
   const value = elements.searchInput.value.trim();
   const language = getPreferences().language;
 
-  if (value !== '' && value.length < 2) {
-    showToast(language === 'nl' ? 'Typ minstens 2 tekens' : 'Please type at least 2 characters');
+  if (value !== '' && value.length < 2 && value.length > 0) {
+    showToast(language === 'nl' ? 'Typ minstens 2 tekens' : 'Type at least 2 characters');
     return;
   }
 
@@ -108,82 +163,113 @@ const handleSearch = debounce(async () => {
   elements.searchClear.classList.toggle('hidden', value === '');
 
   if (value.length >= 2) {
+    setLoading(true);
     try {
-      const apiMeals = await searchMealsFromApi(value);
-      const mealMap = new Map();
-      allMeals.forEach((meal) => mealMap.set(meal.id, meal));
-      apiMeals.forEach((meal) => mealMap.set(meal.id, meal));
-      allMeals = Array.from(mealMap.values());
+      const apiMeals = await searchMealsByName(value);
+      allMeals = apiMeals;
     } catch (error) {
       console.warn('Search failed:', error);
+      showToast(language === 'nl' ? 'Zoeken mislukt' : 'Search failed');
+    } finally {
+      setLoading(false);
+    }
+  } else if (value === '') {
+    setLoading(true);
+    try {
+      allMeals = await getInitialMeals();
+    } catch (err) {
+      console.log('Reload failed:', err);
+    } finally {
+      setLoading(false);
     }
   }
 
   updateResults();
 }, 350);
 
-// Reset search and filters.
-const resetFilters = () => {
+// ============================================
+// RESET FILTERS
+// ============================================
+
+const resetFilters = async () => {
   state.searchTerm = '';
   state.category = '';
   state.area = '';
-  state.sortBy = 'name-asc';
+  state.sortBy = 'name';
 
   elements.searchInput.value = '';
   elements.categoryFilter.value = '';
   elements.areaFilter.value = '';
-  elements.sortSelect.value = 'name-asc';
+  elements.sortSelect.value = 'name';
   elements.searchClear.classList.add('hidden');
 
-  updateResults();
+  setLoading(true);
+  try {
+    allMeals = await getInitialMeals();
+    updateResults();
+  } catch (err) {
+    console.log('Reset failed:', err);
+  } finally {
+    setLoading(false);
+  }
 };
 
-// Update category and area dropdowns based on current language.
+// ============================================
+// UPDATE FILTER DROPDOWNS
+// ============================================
+
 const updateFilterSelects = () => {
   const language = getPreferences().language;
   const categoryPlaceholder = language === 'nl' ? 'Alle categorieën' : 'All Categories';
   const areaPlaceholder = language === 'nl' ? 'Alle keukens' : 'All Cuisines';
 
-  // Preserve current selected values
   const currentCategory = elements.categoryFilter.value;
   const currentArea = elements.areaFilter.value;
 
   fillSelect(elements.categoryFilter, categoriesList, categoryPlaceholder);
   fillSelect(elements.areaFilter, areasList, areaPlaceholder);
 
-  // Restore selections if they still exist in the new options
   if (currentCategory && categoriesList.includes(currentCategory)) {
     elements.categoryFilter.value = currentCategory;
+    state.category = currentCategory;
   } else {
     state.category = '';
   }
+  
   if (currentArea && areasList.includes(currentArea)) {
     elements.areaFilter.value = currentArea;
+    state.area = currentArea;
   } else {
     state.area = '';
   }
 };
 
-// Change page text language.
+// ============================================
+// LANGUAGE
+// ============================================
+
 const applyLanguage = (language) => {
   const textElements = document.querySelectorAll('[data-en]');
   textElements.forEach((element) => {
-    element.textContent = language === 'nl' ? element.dataset.nl : element.dataset.en;
+    if (element.dataset.en && element.dataset.nl) {
+      element.textContent = language === 'nl' ? element.dataset.nl : element.dataset.en;
+    }
   });
 
   elements.searchInput.placeholder = language === 'nl' ? 'Maaltijden zoeken...' : 'Search meals...';
 
-  // Update filter dropdowns (categories & areas)
   if (categoriesList.length && areasList.length) {
     updateFilterSelects();
-    // Re-run filtering to reflect possible changes in selected values
     state.category = elements.categoryFilter.value;
     state.area = elements.areaFilter.value;
     updateResults();
   }
 };
 
-// Apply saved theme, language and view.
+// ============================================
+// PREFERENCES
+// ============================================
+
 const applyPreferences = () => {
   const preferences = getPreferences();
 
@@ -208,7 +294,11 @@ const applyPreferences = () => {
   elements.listBtn.classList.toggle('active', listView);
 };
 
-// Handle newsletter form.
+// ============================================
+// NEWSLETTER
+// ============================================
+
+let feedbackTimeout;
 const handleNewsletterSubmit = (event) => {
   event.preventDefault();
   const emailInput = document.querySelector('#newsletter-email');
@@ -219,11 +309,14 @@ const handleNewsletterSubmit = (event) => {
 
   const email = emailInput.value.trim();
 
+  if (feedbackTimeout) clearTimeout(feedbackTimeout);
+
   if (email === '') {
     feedback.textContent = language === 'nl'
       ? 'Vul een e-mailadres in.'
       : 'Please fill in an email address.';
     feedback.classList.remove('hidden');
+    feedbackTimeout = setTimeout(() => feedback.classList.add('hidden'), 3000);
     return;
   }
 
@@ -232,47 +325,52 @@ const handleNewsletterSubmit = (event) => {
       ? 'Gebruik een geldig e-mailadres.'
       : 'Please use a valid email address.';
     feedback.classList.remove('hidden');
+    feedbackTimeout = setTimeout(() => feedback.classList.add('hidden'), 3000);
     return;
   }
 
   feedback.textContent = language === 'nl' ? 'Bedankt voor je inschrijving!' : 'Thanks for joining!';
   feedback.classList.remove('hidden');
+  feedbackTimeout = setTimeout(() => feedback.classList.add('hidden'), 3000);
   emailInput.value = '';
 };
 
-// Add all events.
-const bindEvents = () => {
-  elements.searchForm.addEventListener('submit', (event) => event.preventDefault());
-  elements.searchInput.addEventListener('input', handleSearch);
+// ============================================
+// EVENT BINDING
+// ============================================
 
-  elements.searchClear.addEventListener('click', () => {
+const bindEvents = () => {
+  elements.searchForm?.addEventListener('submit', (e) => e.preventDefault());
+  elements.searchInput?.addEventListener('input', handleSearch);
+
+  elements.searchClear?.addEventListener('click', () => {
     elements.searchInput.value = '';
     state.searchTerm = '';
     elements.searchClear.classList.add('hidden');
-    updateResults();
+    handleSearch();
   });
 
-  elements.categoryFilter.addEventListener('change', (event) => {
+  elements.categoryFilter?.addEventListener('change', (event) => {
     state.category = event.target.value;
     updateResults();
   });
 
-  elements.areaFilter.addEventListener('change', (event) => {
+  elements.areaFilter?.addEventListener('change', (event) => {
     state.area = event.target.value;
     updateResults();
   });
 
-  elements.sortSelect.addEventListener('change', (event) => {
+  elements.sortSelect?.addEventListener('change', (event) => {
     state.sortBy = event.target.value;
     updateResults();
   });
 
-  elements.resetFilters.addEventListener('click', resetFilters);
+  elements.resetFilters?.addEventListener('click', resetFilters);
 
-  elements.mealsContainer.addEventListener('click', handleCardClick);
-  elements.favoritesContainer.addEventListener('click', handleCardClick);
+  elements.mealsContainer?.addEventListener('click', handleCardClick);
+  elements.favoritesContainer?.addEventListener('click', handleCardClick);
 
-  elements.navButtons.forEach((button) => {
+  elements.navButtons?.forEach((button) => {
     button.addEventListener('click', () => {
       switchView(button.dataset.view);
       if (button.dataset.view === 'favorites') {
@@ -281,14 +379,14 @@ const bindEvents = () => {
     });
   });
 
-  elements.clearFavorites.addEventListener('click', () => {
+  elements.clearFavorites?.addEventListener('click', () => {
     const language = getPreferences().language;
     const question = language === 'nl'
       ? 'Alle favorieten verwijderen?'
       : 'Remove all favorites?';
-    if (!window.confirm(question)) return;
+    if (!confirm(question)) return;
 
-    clearFavorites();
+    clearAllFavs();
     updateResults();
     renderFavorites();
     showToast(language === 'nl' ? 'Favorieten gewist' : 'Favorites cleared');
@@ -304,7 +402,7 @@ const bindEvents = () => {
     });
   }
 
-  elements.langSelect.addEventListener('change', (event) => {
+  elements.langSelect?.addEventListener('change', (event) => {
     savePreference('language', event.target.value);
     applyPreferences();
     updateResults();
@@ -313,21 +411,21 @@ const bindEvents = () => {
     showToast(message);
   });
 
-  elements.gridBtn.addEventListener('click', () => {
+  elements.gridBtn?.addEventListener('click', () => {
     savePreference('view', 'grid');
     applyPreferences();
   });
 
-  elements.listBtn.addEventListener('click', () => {
+  elements.listBtn?.addEventListener('click', () => {
     savePreference('view', 'list');
     applyPreferences();
   });
 
-  elements.modalClose.addEventListener('click', () => {
+  elements.modalClose?.addEventListener('click', () => {
     elements.modal.classList.add('hidden');
   });
 
-  elements.modal.addEventListener('click', (event) => {
+  elements.modal?.addEventListener('click', (event) => {
     if (event.target.dataset.close === 'modal') {
       elements.modal.classList.add('hidden');
     }
@@ -345,7 +443,10 @@ const bindEvents = () => {
   }
 };
 
-// Start the app.
+// ============================================
+// INIT
+// ============================================
+
 const init = async () => {
   try {
     applyPreferences();
@@ -353,9 +454,9 @@ const init = async () => {
     setLoading(true);
 
     const data = await Promise.all([
-      loadInitialMeals(),
-      loadCategories(),
-      loadAreas(),
+      getInitialMeals(),
+      getCategories(),
+      getAreas(),
     ]);
 
     allMeals = data[0];

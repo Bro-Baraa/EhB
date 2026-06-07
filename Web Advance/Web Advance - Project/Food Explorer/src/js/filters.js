@@ -1,108 +1,70 @@
-// Filteren en sorteren - simpele logica
+// Filteren en sorteren
 
-// Filter op zoekterm, categorie en land
-function filterMeals(meals, search, category, area) {
-  // Begin met alle maaltijden
+export function filterMeals(meals, searchTerm, category, area) {
   let result = [...meals];
   
-  // Filter op zoekterm (als die er is)
-  if (search && search.trim() !== '') {
-    const term = search.toLowerCase().trim();
+  // Filter op zoekterm
+  if (searchTerm && searchTerm.trim() !== '') {
+    const term = searchTerm.toLowerCase().trim();
     const filtered = [];
-    
-    for (let i = 0; i < result.length; i++) {
-      const meal = result[i];
-      const nameMatch = meal.name.toLowerCase().includes(term);
-      const catMatch = meal.category.toLowerCase().includes(term);
-      const areaMatch = meal.area.toLowerCase().includes(term);
-      
-      if (nameMatch || catMatch || areaMatch) {
+    for (const meal of result) {
+      if (meal.name.toLowerCase().includes(term) ||
+          meal.category.toLowerCase().includes(term) ||
+          meal.area.toLowerCase().includes(term)) {
         filtered.push(meal);
       }
     }
-    
     result = filtered;
   }
   
   // Filter op categorie
   if (category && category !== '') {
     const filtered = [];
-    
-    for (let i = 0; i < result.length; i++) {
-      if (result[i].category === category) {
-        filtered.push(result[i]);
+    for (const meal of result) {
+      if (meal.category === category) {
+        filtered.push(meal);
       }
     }
-    
     result = filtered;
   }
   
-  // Filter op land/area
+  // Filter op land
   if (area && area !== '') {
     const filtered = [];
-    
-    for (let i = 0; i < result.length; i++) {
-      if (result[i].area === area) {
-        filtered.push(result[i]);
+    for (const meal of result) {
+      if (meal.area === area) {
+        filtered.push(meal);
       }
     }
-    
     result = filtered;
   }
   
   return result;
 }
 
-// Sorteer op verschillende manieren
-function sortMeals(meals, sortType) {
+export function sortMeals(meals, sortType) {
   const sorted = [...meals];
   
   if (sortType === 'name') {
-    // A-Z
-    sorted.sort(function(a, b) {
-      if (a.name < b.name) return -1;
-      if (a.name > b.name) return 1;
-      return 0;
-    });
+    sorted.sort((a, b) => a.name.localeCompare(b.name));
   } 
   else if (sortType === 'name-desc') {
-    // Z-A
-    sorted.sort(function(a, b) {
-      if (a.name > b.name) return -1;
-      if (a.name < b.name) return 1;
-      return 0;
-    });
+    sorted.sort((a, b) => b.name.localeCompare(a.name));
   }
   else if (sortType === 'category') {
-    sorted.sort(function(a, b) {
-      if (a.category < b.category) return -1;
-      if (a.category > b.category) return 1;
-      return 0;
-    });
+    sorted.sort((a, b) => a.category.localeCompare(b.category));
   }
   else if (sortType === 'area') {
-    sorted.sort(function(a, b) {
-      if (a.area < b.area) return -1;
-      if (a.area > b.area) return 1;
-      return 0;
-    });
+    sorted.sort((a, b) => a.area.localeCompare(b.area));
   }
   
   return sorted;
 }
 
-// Debounce functie voor search (wacht even met zoeken)
-function debounce(func, wait) {
+export function debounce(func, wait) {
   let timeout;
-  
-  return function() {
-    const context = this;
-    const args = arguments;
-    
+  return function(...args) {
     clearTimeout(timeout);
-    
-    timeout = setTimeout(function() {
-      func.apply(context, args);
-    }, wait);
+    timeout = setTimeout(() => func.apply(this, args), wait);
   };
 }

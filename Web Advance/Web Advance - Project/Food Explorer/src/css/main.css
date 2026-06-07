@@ -1,5 +1,4 @@
-/* Food Explorer - main stylesheet */
-/* made for Web Advanced project */
+/* Food Explorer - Main Stylesheet */
 
 :root {
   --bg: #1c1c2e;
@@ -47,12 +46,20 @@ button, input, select {
   font-size: 1rem;
 }
 
-button { cursor: pointer; }
-img { display: block; max-width: 100%; }
+button {
+  cursor: pointer;
+}
 
+img {
+  display: block;
+  max-width: 100%;
+}
 
-/* header */
+.hidden {
+  display: none !important;
+}
 
+/* Header */
 .header {
   display: flex;
   align-items: center;
@@ -66,11 +73,20 @@ img { display: block; max-width: 100%; }
   flex-wrap: wrap;
 }
 
-.site-title {
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.logo-icon {
+  font-size: 1.5rem;
+}
+
+.logo-text {
   font-size: 1.3rem;
   font-weight: bold;
   color: var(--primary);
-  letter-spacing: 0.5px;
 }
 
 .main-nav {
@@ -86,7 +102,6 @@ img { display: block; max-width: 100%; }
   background: transparent;
   color: var(--muted);
   transition: all 0.2s;
-  font-size: 0.9rem;
 }
 
 .nav-btn:hover {
@@ -110,23 +125,23 @@ img { display: block; max-width: 100%; }
   margin-left: 4px;
 }
 
-.header-right {
+.header-actions {
   display: flex;
   align-items: center;
   gap: 8px;
   margin-left: auto;
 }
 
-.theme-btn {
+.icon-btn {
   padding: 5px 12px;
   border: 1px solid var(--border);
   border-radius: var(--radius);
   background: transparent;
   color: var(--text);
-  font-size: 0.85rem;
+  font-size: 1rem;
 }
 
-.theme-btn:hover {
+.icon-btn:hover {
   background: var(--surface2);
 }
 
@@ -137,21 +152,16 @@ img { display: block; max-width: 100%; }
   background: var(--surface);
   color: var(--text);
   cursor: pointer;
-  font-size: 0.9rem;
 }
 
-
-/* main content */
-
+/* Main Content */
 .wrapper {
   max-width: 1100px;
   margin: 0 auto;
   padding: 2rem 1.5rem 5rem;
 }
 
-
-/* hero */
-
+/* Hero */
 .hero {
   margin-bottom: 2rem;
   padding: 2rem;
@@ -171,16 +181,24 @@ img { display: block; max-width: 100%; }
 .hero h1 {
   font-size: 2rem;
   margin-bottom: 10px;
-  line-height: 1.2;
 }
 
-.hero-sub {
+.hero p {
   color: var(--muted);
 }
 
+/* Newsletter */
+.newsletter-wrap {
+  margin-bottom: 2rem;
+}
 
-/* controls / search bar */
+.newsletter-form {
+  display: flex;
+  gap: 0.5rem;
+  max-width: 400px;
+}
 
+/* Controls */
 .controls {
   background: var(--surface);
   border: 1px solid var(--border);
@@ -215,10 +233,6 @@ img { display: block; max-width: 100%; }
   border-color: var(--primary);
 }
 
-.search-input::placeholder {
-  color: var(--muted);
-}
-
 .clear-btn {
   position: absolute;
   right: 8px;
@@ -228,7 +242,9 @@ img { display: block; max-width: 100%; }
   font-size: 0.85rem;
 }
 
-.clear-btn:hover { color: var(--text); }
+.clear-btn:hover {
+  color: var(--text);
+}
 
 .filters {
   display: flex;
@@ -243,12 +259,6 @@ img { display: block; max-width: 100%; }
   background: var(--surface2);
   color: var(--text);
   cursor: pointer;
-  font-size: 0.875rem;
-}
-
-.filter-select:focus {
-  outline: none;
-  border-color: var(--primary);
 }
 
 .view-toggle {
@@ -262,7 +272,6 @@ img { display: block; max-width: 100%; }
   border-radius: var(--radius);
   background: transparent;
   color: var(--muted);
-  font-size: 0.8rem;
 }
 
 .toggle-btn.active {
@@ -271,9 +280,7 @@ img { display: block; max-width: 100%; }
   border-color: var(--primary);
 }
 
-
-/* results bar */
-
+/* Results Bar */
 .results-bar {
   display: flex;
   justify-content: space-between;
@@ -292,14 +299,13 @@ img { display: block; max-width: 100%; }
   background: none;
   border: none;
   text-decoration: underline;
+  cursor: pointer;
 }
 
-
-/* meals grid */
-
+/* Meals Grid */
 .meals-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
   gap: 1.2rem;
 }
 
@@ -307,31 +313,18 @@ img { display: block; max-width: 100%; }
   grid-template-columns: 1fr;
 }
 
-
-/* meal card */
-
+/* Meal Card */
 .meal-card {
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius);
   overflow: hidden;
-  opacity: 0;
-  transform: translateY(12px);
-  transition: opacity 0.35s, transform 0.35s, border-color 0.2s;
-}
-
-.meal-card.visible {
-  opacity: 1;
-  transform: none;
+  transition: transform 0.2s, border-color 0.2s;
 }
 
 .meal-card:hover {
   border-color: var(--primary);
   transform: translateY(-2px);
-}
-
-.meal-card:not(.visible):hover {
-  transform: none;
 }
 
 .meal-card img {
@@ -365,7 +358,7 @@ img { display: block; max-width: 100%; }
 }
 
 .tag {
-  font-size: 0.72rem;
+  font-size: 0.7rem;
   background: var(--surface2);
   color: var(--muted);
   padding: 2px 8px;
@@ -384,12 +377,13 @@ img { display: block; max-width: 100%; }
   color: white;
   border: none;
   border-radius: 8px;
-  font-size: 0.85rem;
   font-weight: bold;
-  transition: background 0.2s;
+  cursor: pointer;
 }
 
-.btn-details:hover { background: var(--primary-hover); }
+.btn-details:hover {
+  background: var(--primary-hover);
+}
 
 .btn-save {
   padding: 7px 12px;
@@ -397,21 +391,17 @@ img { display: block; max-width: 100%; }
   color: var(--text);
   border: 1px solid var(--border);
   border-radius: 8px;
-  font-size: 0.85rem;
-  transition: background 0.2s;
+  cursor: pointer;
 }
 
 .btn-save:hover {
   border-color: var(--primary);
-  background: var(--surface);
 }
 
-
-/* list view tweaks */
-
+/* List View */
 .meals-grid.list-view .meal-card {
   display: grid;
-  grid-template-columns: 160px 1fr;
+  grid-template-columns: 120px 1fr;
 }
 
 .meals-grid.list-view .meal-card img {
@@ -419,13 +409,10 @@ img { display: block; max-width: 100%; }
   aspect-ratio: unset;
 }
 
-
-/* loader */
-
+/* Loader */
 .loader {
   text-align: center;
   padding: 3rem;
-  color: var(--muted);
 }
 
 .spinner {
@@ -442,9 +429,7 @@ img { display: block; max-width: 100%; }
   to { transform: rotate(360deg); }
 }
 
-
-/* empty state */
-
+/* Empty State */
 .empty-state {
   text-align: center;
   padding: 3rem 1rem;
@@ -463,18 +448,12 @@ img { display: block; max-width: 100%; }
   margin-bottom: 5px;
 }
 
-
-/* favorites header */
-
+/* Favorites Header */
 .fav-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
   margin-bottom: 1.5rem;
-}
-
-.fav-header h2 {
-  font-size: 1.4rem;
 }
 
 .danger-btn {
@@ -483,8 +462,7 @@ img { display: block; max-width: 100%; }
   color: var(--danger);
   background: transparent;
   border-radius: var(--radius);
-  font-size: 0.875rem;
-  transition: background 0.2s;
+  cursor: pointer;
 }
 
 .danger-btn:hover {
@@ -492,9 +470,7 @@ img { display: block; max-width: 100%; }
   color: white;
 }
 
-
-/* modal */
-
+/* Modal */
 .modal {
   position: fixed;
   inset: 0;
@@ -508,7 +484,7 @@ img { display: block; max-width: 100%; }
 .modal-backdrop {
   position: absolute;
   inset: 0;
-  background: rgba(0,0,0,0.65);
+  background: rgba(0, 0, 0, 0.65);
 }
 
 .modal-box {
@@ -519,12 +495,6 @@ img { display: block; max-width: 100%; }
   background: var(--surface);
   border-radius: 14px;
   border: 1px solid var(--border);
-  animation: popIn 0.2s ease;
-}
-
-@keyframes popIn {
-  from { opacity: 0; transform: scale(0.96); }
-  to   { opacity: 1; transform: scale(1); }
 }
 
 .modal-close {
@@ -537,13 +507,13 @@ img { display: block; max-width: 100%; }
   border-radius: 6px;
   background: var(--surface2);
   color: var(--muted);
+  cursor: pointer;
   z-index: 10;
 }
 
 .modal-close:hover {
   background: var(--danger);
   color: white;
-  border-color: var(--danger);
 }
 
 .modal-body {
@@ -578,21 +548,17 @@ img { display: block; max-width: 100%; }
 .modal-tags span {
   font-size: 0.8rem;
   background: var(--surface2);
-  color: var(--muted);
   padding: 3px 10px;
   border-radius: 6px;
 }
 
 .modal-video-link {
   display: inline-block;
-  margin-top: 8px;
   padding: 6px 14px;
   border: 1px solid var(--primary);
   color: var(--primary);
   text-decoration: none;
   border-radius: 8px;
-  font-size: 0.875rem;
-  transition: background 0.2s;
 }
 
 .modal-video-link:hover {
@@ -611,13 +577,11 @@ img { display: block; max-width: 100%; }
 .modal-instructions p {
   font-size: 0.9rem;
   color: var(--muted);
-  line-height: 1.8;
+  line-height: 1.6;
   white-space: pre-line;
 }
 
-
-/* toast */
-
+/* Toast */
 .toast {
   position: fixed;
   bottom: 1.5rem;
@@ -628,50 +592,38 @@ img { display: block; max-width: 100%; }
   border: 1px solid var(--border);
   border-radius: 10px;
   font-size: 0.875rem;
-  color: var(--text);
-  box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
 }
 
-
-/* utility */
-
-.hidden { display: none !important; }
-
-
-/* responsive */
-
+/* Responsive */
 @media (max-width: 750px) {
   .header {
     padding: 0.8rem 1rem;
   }
-
+  
   .hero h1 {
     font-size: 1.5rem;
   }
-
+  
   .controls {
     flex-direction: column;
     align-items: stretch;
   }
-
+  
   .modal-top {
-    grid-template-columns: 1fr;
-  }
-
-  .meals-grid.list-view .meal-card {
     grid-template-columns: 1fr;
   }
 }
 
 @media (max-width: 480px) {
   .wrapper {
-    padding: 1rem 1rem 4rem;
+    padding: 1rem;
   }
-
+  
   .meals-grid {
     grid-template-columns: 1fr;
   }
-
+  
   .filters {
     flex-direction: column;
   }
