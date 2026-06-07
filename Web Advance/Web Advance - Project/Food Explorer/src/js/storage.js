@@ -1,24 +1,29 @@
-// Read data from LocalStorage.
-export const getStorage = (key, fallback) => {
-  try {
-    const savedItem = localStorage.getItem(key);
+// Simpele localStorage functies - niks ingewikkelds
 
-    if (savedItem) {
-      return JSON.parse(savedItem);
+// Opslaan
+function saveToLocal(key, data) {
+  try {
+    const toSave = JSON.stringify(data);
+    localStorage.setItem(key, toSave);
+    return true;
+  } catch (err) {
+    console.log('Save mislukt:', err);
+    return false;
+  }
+}
+
+// Laden met fallback waarde
+function loadFromLocal(key, fallback = null) {
+  try {
+    const saved = localStorage.getItem(key);
+    
+    if (saved) {
+      return JSON.parse(saved);
     }
-
+    
     return fallback;
-  } catch (error) {
-    console.warn('LocalStorage read error:', error);
+  } catch (err) {
+    console.log('Load mislukt:', err);
     return fallback;
   }
-};
-
-// Save data in LocalStorage.
-export const setStorage = (key, value) => {
-  try {
-    localStorage.setItem(key, JSON.stringify(value));
-  } catch (error) {
-    console.warn('LocalStorage save error:', error);
-  }
-};
+}
