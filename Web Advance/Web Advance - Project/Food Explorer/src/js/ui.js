@@ -2,32 +2,43 @@ import { isFav } from './favorites.js';
 
 export const elements = {
   navButtons: document.querySelectorAll('.nav-btn'),
+
   browseView: document.querySelector('#view-browse'),
   favoritesView: document.querySelector('#view-favorites'),
+
   mealsContainer: document.querySelector('#meals-container'),
   favoritesContainer: document.querySelector('#favorites-container'),
   favoritesEmpty: document.querySelector('#favorites-empty'),
+
   searchInput: document.querySelector('#search-input'),
   searchClear: document.querySelector('#search-clear'),
+
   categoryFilter: document.querySelector('#filter-category'),
   areaFilter: document.querySelector('#filter-area'),
   sortSelect: document.querySelector('#sort-select'),
+
   resultsCount: document.querySelector('#results-count'),
   resetFilters: document.querySelector('#reset-filters'),
+
   loader: document.querySelector('#loader'),
   emptyState: document.querySelector('#empty-state'),
   errorState: document.querySelector('#error-state'),
+
   favCount: document.querySelector('#fav-count'),
   clearFavorites: document.querySelector('#clear-favorites'),
+
   langSelect: document.querySelector('#lang-select'),
   gridBtn: document.querySelector('#view-grid'),
   listBtn: document.querySelector('#view-list'),
+
   modal: document.querySelector('#modal'),
   modalBody: document.querySelector('#modal-body'),
   modalClose: document.querySelector('#modal-close'),
+
   toast: document.querySelector('#toast'),
 };
 
+// Beschermt de HTML tegen rare tekens uit de API.
 function escapeHtml(text) {
   if (!text) return '';
 
@@ -39,11 +50,11 @@ function escapeHtml(text) {
     .replaceAll("'", '&#039;');
 }
 
-// Bouwt één kaart voor een maaltijd.
+// Maakt de HTML voor één maaltijdkaart.
 function buildCard(meal) {
   const saved = isFav(meal.id);
   const heart = saved ? '❤️' : '🤍';
-  const saveText = saved ? 'Remove' : 'Save';
+  const buttonText = saved ? 'Remove' : 'Save';
 
   return `
     <article class="meal-card" data-id="${escapeHtml(meal.id)}">
@@ -62,8 +73,13 @@ function buildCard(meal) {
         </div>
 
         <div class="card-actions">
-          <button class="btn-details" data-action="details" data-id="${escapeHtml(meal.id)}">Details</button>
-          <button class="btn-save" data-action="favorite" data-id="${escapeHtml(meal.id)}">${saveText}</button>
+          <button class="btn-details" data-action="details" data-id="${escapeHtml(meal.id)}">
+            Details
+          </button>
+
+          <button class="btn-save" data-action="favorite" data-id="${escapeHtml(meal.id)}">
+            ${buttonText}
+          </button>
         </div>
       </div>
     </article>
@@ -75,11 +91,11 @@ export function renderMeals(container, meals, emptyElement) {
 
   if (meals.length === 0) {
     container.innerHTML = '';
-    if (emptyElement) emptyElement.classList.remove('hidden');
+    emptyElement?.classList.remove('hidden');
     return;
   }
 
-  if (emptyElement) emptyElement.classList.add('hidden');
+  emptyElement?.classList.add('hidden');
   container.innerHTML = meals.map(buildCard).join('');
 }
 
@@ -95,28 +111,23 @@ export function fillSelect(element, items, placeholder) {
 
 export function setLoading(isLoading) {
   if (isLoading) {
-    showLoading();
+    elements.loader?.classList.remove('hidden');
+    elements.emptyState?.classList.add('hidden');
+    elements.errorState?.classList.add('hidden');
   } else {
-    hideLoading();
+    elements.loader?.classList.add('hidden');
   }
 }
 
-export function showLoading() {
-  if (elements.loader) elements.loader.classList.remove('hidden');
-  if (elements.emptyState) elements.emptyState.classList.add('hidden');
-  if (elements.errorState) elements.errorState.classList.add('hidden');
-}
-
-export function hideLoading() {
-  if (elements.loader) elements.loader.classList.add('hidden');
-}
-
 export function showError() {
-  if (elements.errorState) elements.errorState.classList.remove('hidden');
-  if (elements.mealsContainer) elements.mealsContainer.innerHTML = '';
-  if (elements.emptyState) elements.emptyState.classList.add('hidden');
+  elements.errorState?.classList.remove('hidden');
+  elements.emptyState?.classList.add('hidden');
 
-  hideLoading();
+  if (elements.mealsContainer) {
+    elements.mealsContainer.innerHTML = '';
+  }
+
+  setLoading(false);
 }
 
 let toastTimeout;
@@ -135,11 +146,11 @@ export function showToast(message) {
 }
 
 export function updateFavoriteCount(count) {
-  if (elements.favCount) elements.favCount.textContent = count;
-
-  if (elements.clearFavorites) {
-    elements.clearFavorites.classList.toggle('hidden', count === 0);
+  if (elements.favCount) {
+    elements.favCount.textContent = count;
   }
+
+  elements.clearFavorites?.classList.toggle('hidden', count === 0);
 }
 
 export function switchView(view) {
@@ -153,11 +164,12 @@ export function switchView(view) {
   });
 }
 
+// Toont de details van een maaltijd in de modal.
 export function renderModal(meal) {
   if (!elements.modal || !elements.modalBody) return;
 
-  const videoHtml = meal.youtube
-    ? `<a class="modal-video-link" href="${escapeHtml(meal.youtube)}" target="_blank">▶ Watch on YouTube</a>`
+  const videoLink = meal.youtube
+    ? `<a class="modal-video-link" href="${escapeHtml(meal.youtube)}" target="_blank">Watch on YouTube</a>`
     : '';
 
   elements.modalBody.innerHTML = `
@@ -173,7 +185,7 @@ export function renderModal(meal) {
         </div>
 
         <p><strong>Tags:</strong> ${escapeHtml(meal.tags)}</p>
-        ${videoHtml}
+        ${videoLink}
       </div>
     </div>
 

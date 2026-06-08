@@ -1,8 +1,8 @@
-// Filteren en sorteren.
+// Filtert de maaltijden op zoektekst, categorie en keuken.
 export function filterMeals(meals, searchTerm, category, area) {
   let result = [...meals];
 
-  if (searchTerm && searchTerm.trim() !== '') {
+  if (searchTerm.trim() !== '') {
     const term = searchTerm.toLowerCase().trim();
 
     result = result.filter((meal) => {
@@ -23,6 +23,7 @@ export function filterMeals(meals, searchTerm, category, area) {
   return result;
 }
 
+// Sorteert de lijst zonder de originele array aan te passen.
 export function sortMeals(meals, sortType) {
   const sorted = [...meals];
 
@@ -45,6 +46,7 @@ export function sortMeals(meals, sortType) {
   return sorted;
 }
 
+// Wacht even voor de functie wordt uitgevoerd. Handig bij zoeken tijdens typen.
 export function debounce(func, wait) {
   let timeout;
 

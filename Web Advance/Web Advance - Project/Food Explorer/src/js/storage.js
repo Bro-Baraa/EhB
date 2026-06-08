@@ -1,4 +1,4 @@
-// Kleine helpers voor localStorage.
+// Kleine functies zodat ik localStorage niet overal opnieuw moet schrijven.
 export function saveToLocal(key, data) {
   try {
     localStorage.setItem(key, JSON.stringify(data));

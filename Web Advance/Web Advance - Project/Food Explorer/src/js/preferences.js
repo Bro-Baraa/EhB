@@ -1,6 +1,6 @@
 import { getStorage, setStorage } from './storage.js';
 
-const PREF_KEY = 'food-explorer:preferences';
+const PREF_KEY = 'food_explorer_preferences';
 
 const defaultPreferences = {
   theme: 'dark',
@@ -8,6 +8,7 @@ const defaultPreferences = {
   view: 'grid',
 };
 
+// Laadt de voorkeuren. Als er niets is opgeslagen, gebruik ik de standaardwaarden.
 export function getPreferences() {
   return {
     ...defaultPreferences,
@@ -17,11 +18,12 @@ export function getPreferences() {
 
 export function savePreference(key, value) {
   const preferences = getPreferences();
-  const updated = {
+
+  const updatedPreferences = {
     ...preferences,
     [key]: value,
   };
 
-  setStorage(PREF_KEY, updated);
-  return updated;
+  setStorage(PREF_KEY, updatedPreferences);
+  return updatedPreferences;
 }

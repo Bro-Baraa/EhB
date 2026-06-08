@@ -26,6 +26,7 @@ let allMeals = [];
 let visibleMeals = [];
 let categoriesList = [];
 let areasList = [];
+let eventsAreBound = false;
 
 const state = {
   searchTerm: '',
@@ -34,13 +35,19 @@ const state = {
   sortBy: 'name',
 };
 
+// Zoekt eerst in de geladen maaltijden. Als de maaltijd niet gevonden is,
+// wordt die opnieuw opgehaald via de API.
 async function findMeal(id) {
   const localMeal = allMeals.find((meal) => meal.id === id);
-  if (localMeal) return localMeal;
+
+  if (localMeal) {
+    return localMeal;
+  }
 
   return getMealById(id);
 }
 
+// Controleert of er een filter, zoekterm of sortering actief is.
 function hasActiveFilters() {
   return state.searchTerm !== ''
     || state.category !== ''
@@ -48,7 +55,7 @@ function hasActiveFilters() {
     || state.sortBy !== 'name';
 }
 
-// Kleine animatie wanneer kaarten in beeld komen.
+// Geeft de kaarten een kleine animatie wanneer ze zichtbaar worden.
 function observeCards() {
   const cards = document.querySelectorAll('.meal-card');
 
@@ -64,6 +71,7 @@ function observeCards() {
   cards.forEach((card) => observer.observe(card));
 }
 
+// Past zoeken, filteren en sorteren toe op de maaltijdlijst.
 function updateResults() {
   const filtered = filterMeals(allMeals, state.searchTerm, state.category, state.area);
   visibleMeals = sortMeals(filtered, state.sortBy);
@@ -71,13 +79,14 @@ function updateResults() {
   renderMeals(elements.mealsContainer, visibleMeals, elements.emptyState);
   observeCards();
 
-  const language = getPreferences().language;
-  const text = language === 'nl' ? 'maaltijden gevonden' : 'meals found';
+  const lang = getPreferences().language;
+  const text = lang === 'nl' ? 'maaltijden gevonden' : 'meals found';
 
   elements.resultsCount.textContent = `${visibleMeals.length} ${text}`;
   elements.resetFilters.classList.toggle('hidden', !hasActiveFilters());
 }
 
+// Laadt alle favoriete maaltijden en toont ze in de favorietenpagina.
 async function renderFavorites() {
   try {
     const favorites = await loadFavMeals();
@@ -91,19 +100,26 @@ async function renderFavorites() {
   }
 }
 
+// Regelt de knoppen in een maaltijdkaart: details en favorieten.
 async function handleCardClick(event) {
   const button = event.target.closest('button[data-action]');
+
   if (!button) return;
 
   const mealId = button.dataset.id;
-  const language = getPreferences().language;
+  const lang = getPreferences().language;
 
   if (button.dataset.action === 'details') {
     setLoading(true);
 
     try {
       const meal = await findMeal(mealId);
-      meal ? renderModal(meal) : showToast('Could not load details');
+
+      if (meal) {
+        renderModal(meal);
+      } else {
+        showToast('Could not load details');
+      }
     } catch (err) {
       console.log('Details laden mislukt:', err);
       showToast('Error loading details');
@@ -115,9 +131,11 @@ async function handleCardClick(event) {
   if (button.dataset.action === 'favorite') {
     const result = toggleFav(mealId);
 
-    showToast(result.added
-      ? (language === 'nl' ? 'Opgeslagen als favoriet ❤️' : 'Saved to favorites ❤️')
-      : (language === 'nl' ? 'Verwijderd uit favorieten' : 'Removed from favorites'));
+    const message = result.added
+      ? (lang === 'nl' ? 'Toegevoegd aan favorieten' : 'Saved to favorites')
+      : (lang === 'nl' ? 'Verwijderd uit favorieten' : 'Removed from favorites');
+
+    showToast(message);
 
     updateFavoriteCount(result.favorites.length);
     updateResults();
@@ -125,12 +143,13 @@ async function handleCardClick(event) {
   }
 }
 
+// Zoekt via de API als de gebruiker minstens 2 tekens typt.
 const handleSearch = debounce(async () => {
   const value = elements.searchInput.value.trim();
-  const language = getPreferences().language;
+  const lang = getPreferences().language;
 
   if (value.length === 1) {
-    showToast(language === 'nl' ? 'Typ minstens 2 tekens' : 'Type at least 2 characters');
+    showToast(lang === 'nl' ? 'Typ minstens 2 tekens' : 'Type at least 2 characters');
     return;
   }
 
@@ -140,16 +159,20 @@ const handleSearch = debounce(async () => {
   setLoading(true);
 
   try {
-    allMeals = value.length >= 2 ? await searchMeals(value) : await loadInitialMeals();
+    allMeals = value.length >= 2
+      ? await searchMeals(value)
+      : await loadInitialMeals();
+
     updateResults();
   } catch (err) {
     console.log('Zoeken mislukt:', err);
-    showToast(language === 'nl' ? 'Zoeken mislukt' : 'Search failed');
+    showToast(lang === 'nl' ? 'Zoeken mislukt' : 'Search failed');
   } finally {
     setLoading(false);
   }
 }, 350);
 
+// Zet alle filters terug naar de beginstatus.
 async function resetFilters() {
   state.searchTerm = '';
   state.category = '';
@@ -174,25 +197,33 @@ async function resetFilters() {
   }
 }
 
+// Vult de dropdowns voor categorie en keuken.
 function updateFilterSelects() {
-  const language = getPreferences().language;
-  const categoryText = language === 'nl' ? 'Alle categorieën' : 'All Categories';
-  const areaText = language === 'nl' ? 'Alle keukens' : 'All Cuisines';
+  const lang = getPreferences().language;
+
+  const categoryText = lang === 'nl' ? 'Alle categorieën' : 'All Categories';
+  const areaText = lang === 'nl' ? 'Alle keukens' : 'All Cuisines';
 
   fillSelect(elements.categoryFilter, categoriesList, categoryText);
   fillSelect(elements.areaFilter, areasList, areaText);
 }
 
+// Vervangt teksten op de pagina volgens de gekozen taal.
 function applyLanguage(language) {
   document.querySelectorAll('[data-en]').forEach((element) => {
-    element.textContent = language === 'nl' ? element.dataset.nl : element.dataset.en;
+    element.textContent = language === 'nl'
+      ? element.dataset.nl
+      : element.dataset.en;
   });
 
-  elements.searchInput.placeholder = language === 'nl' ? 'Maaltijden zoeken...' : 'Search meals...';
+  elements.searchInput.placeholder = language === 'nl'
+    ? 'Maaltijden zoeken...'
+    : 'Search meals...';
 
   updateFilterSelects();
 }
 
+// Past opgeslagen instellingen toe zoals thema, taal en grid/list view.
 function applyPreferences() {
   const preferences = getPreferences();
   const themeButton = document.querySelector('#theme-toggle');
@@ -216,20 +247,21 @@ function applyPreferences() {
   applyLanguage(preferences.language);
 }
 
+// Controleert of het e-mailadres in het formulier geldig is.
 function handleNewsletterSubmit(event) {
   event.preventDefault();
 
   const emailInput = document.querySelector('#newsletter-email');
   const feedback = document.querySelector('#form-feedback');
-  const language = getPreferences().language;
+  const lang = getPreferences().language;
 
   if (!emailInput || !feedback) return;
 
   const email = emailInput.value.trim();
-  const validEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  const isValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
-  if (!validEmail) {
-    feedback.textContent = language === 'nl'
+  if (!isValid) {
+    feedback.textContent = lang === 'nl'
       ? 'Gebruik een geldig e-mailadres.'
       : 'Please use a valid email address.';
 
@@ -237,7 +269,7 @@ function handleNewsletterSubmit(event) {
     return;
   }
 
-  feedback.textContent = language === 'nl'
+  feedback.textContent = lang === 'nl'
     ? 'Bedankt voor je inschrijving!'
     : 'Thanks for joining!';
 
@@ -245,7 +277,10 @@ function handleNewsletterSubmit(event) {
   emailInput.value = '';
 }
 
+// Koppelt alle knoppen, inputs en formulieren aan hun functie.
 function bindEvents() {
+  if (eventsAreBound) return;
+
   elements.searchInput?.addEventListener('input', handleSearch);
 
   elements.searchClear?.addEventListener('click', () => {
@@ -269,6 +304,7 @@ function bindEvents() {
   });
 
   elements.resetFilters?.addEventListener('click', resetFilters);
+
   elements.mealsContainer?.addEventListener('click', handleCardClick);
   elements.favoritesContainer?.addEventListener('click', handleCardClick);
 
@@ -299,6 +335,7 @@ function bindEvents() {
 
   elements.langSelect?.addEventListener('change', (event) => {
     savePreference('language', event.target.value);
+
     applyPreferences();
     updateResults();
     renderFavorites();
@@ -332,8 +369,11 @@ function bindEvents() {
 
   document.querySelector('#newsletter-form')?.addEventListener('submit', handleNewsletterSubmit);
   document.querySelector('#retry-btn')?.addEventListener('click', init);
+
+  eventsAreBound = true;
 }
 
+// Startpunt van de applicatie.
 async function init() {
   setLoading(true);
 

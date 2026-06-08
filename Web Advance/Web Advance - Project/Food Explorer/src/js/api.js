@@ -1,4 +1,5 @@
 const API_URL = 'https://www.themealdb.com/api/json/v1/1';
+
 const letters = 'abcdefghijklmnopqrstuvwxyz'.split('');
 
 const buildUrl = (endpoint) => `${API_URL}/${endpoint}`;
@@ -7,13 +8,13 @@ async function fetchJson(endpoint) {
   const response = await fetch(buildUrl(endpoint));
 
   if (!response.ok) {
-    throw new Error(`TheMealDB request failed with status ${response.status}`);
+    throw new Error(`TheMealDB request failed: ${response.status}`);
   }
 
   return response.json();
 }
 
-// Maakt de API-data eenvoudiger voor de rest van de app.
+// Zet de ruwe API-data om naar een kleiner object dat ik in de app gebruik.
 function formatMeal(meal) {
   if (!meal) return null;
 
@@ -30,17 +31,19 @@ function formatMeal(meal) {
   };
 }
 
+// Laadt maaltijden voor de startpagina. Ik zoek per beginletter om meer resultaten te krijgen.
 export async function loadInitialMeals() {
   const requests = letters.map(async (letter) => {
     try {
       return await fetchJson(`search.php?f=${letter}`);
     } catch (err) {
-      console.log(`Geen data voor letter ${letter}:`, err);
+      console.log(`Geen maaltijden voor letter ${letter}`);
       return { meals: [] };
     }
   });
 
   const results = await Promise.all(requests);
+
   const meals = [];
   const usedIds = new Set();
 
@@ -60,25 +63,39 @@ export async function loadInitialMeals() {
   return meals;
 }
 
+// Haalt alle categorieën op voor de filter.
 export async function loadCategories() {
   const data = await fetchJson('list.php?c=list');
-  return data.meals ? data.meals.map((item) => item.strCategory).sort() : [];
+
+  return data.meals
+    ? data.meals.map((item) => item.strCategory).sort()
+    : [];
 }
 
+// Haalt alle landen/keukens op voor de filter.
 export async function loadAreas() {
   const data = await fetchJson('list.php?a=list');
-  return data.meals ? data.meals.map((item) => item.strArea).sort() : [];
+
+  return data.meals
+    ? data.meals.map((item) => item.strArea).sort()
+    : [];
 }
 
+// Zoekt maaltijden op naam via de API.
 export async function searchMeals(searchTerm) {
-  const safeTerm = encodeURIComponent(searchTerm.trim());
-  const data = await fetchJson(`search.php?s=${safeTerm}`);
+  const term = encodeURIComponent(searchTerm.trim());
+  const data = await fetchJson(`search.php?s=${term}`);
 
-  return data.meals ? data.meals.map(formatMeal).filter(Boolean) : [];
+  return data.meals
+    ? data.meals.map(formatMeal).filter(Boolean)
+    : [];
 }
 
+// Haalt één maaltijd op met ID. Dit gebruik ik vooral voor details en favorieten.
 export async function getMealById(mealId) {
   const data = await fetchJson(`lookup.php?i=${encodeURIComponent(mealId)}`);
 
-  return data.meals && data.meals.length > 0 ? formatMeal(data.meals[0]) : null;
+  return data.meals && data.meals.length > 0
+    ? formatMeal(data.meals[0])
+    : null;
 }

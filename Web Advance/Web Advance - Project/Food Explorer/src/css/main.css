@@ -1,3 +1,4 @@
+/* Algemene kleuren voor dark mode */
 :root {
   --bg: #1c1c2e;
   --surface: #2a2a3e;
@@ -12,6 +13,7 @@
   --radius: 10px;
 }
 
+/* Kleuren voor light mode */
 html[data-theme="light"] {
   --bg: #f2f0eb;
   --surface: #ffffff;
@@ -25,6 +27,7 @@ html[data-theme="light"] {
   --danger: #c04040;
 }
 
+/* Basis reset */
 * {
   box-sizing: border-box;
   margin: 0;
@@ -59,6 +62,7 @@ img {
   display: none !important;
 }
 
+/* Bovenste navigatie */
 .header {
   display: flex;
   align-items: center;
@@ -153,12 +157,14 @@ img {
   border-radius: var(--radius);
 }
 
+/* Hoofdcontainer */
 .wrapper {
   max-width: 1100px;
   margin: 0 auto;
   padding: 2rem 1.5rem 5rem;
 }
 
+/* Intro blok */
 .hero {
   margin-bottom: 2rem;
   padding: 2rem;
@@ -184,6 +190,7 @@ img {
   color: var(--muted);
 }
 
+/* Nieuwsbrief formulier */
 .newsletter-wrap {
   margin-bottom: 2rem;
 }
@@ -198,6 +205,7 @@ img {
   max-width: 430px;
 }
 
+/* Zoekbalk en filters */
 .controls {
   background: var(--surface);
   border: 1px solid var(--border);
@@ -267,6 +275,7 @@ img {
   border-color: var(--primary);
 }
 
+/* Resultaten balk */
 .results-bar {
   display: flex;
   justify-content: space-between;
@@ -287,6 +296,7 @@ img {
   text-decoration: underline;
 }
 
+/* Grid met maaltijdkaarten */
 .meals-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
@@ -297,6 +307,7 @@ img {
   grid-template-columns: 1fr;
 }
 
+/* Maaltijdkaart */
 .meal-card {
   background: var(--surface);
   border: 1px solid var(--border);
@@ -386,6 +397,7 @@ img {
   border-color: var(--primary);
 }
 
+/* Lijstweergave */
 .meals-grid.list-view .meal-card {
   display: grid;
   grid-template-columns: 130px 1fr;
@@ -396,6 +408,7 @@ img {
   aspect-ratio: unset;
 }
 
+/* Loader */
 .loader {
   text-align: center;
   padding: 3rem;
@@ -417,6 +430,7 @@ img {
   }
 }
 
+/* Lege staat en foutmelding */
 .empty-state {
   text-align: center;
   padding: 3rem 1rem;
@@ -435,6 +449,7 @@ img {
   margin-bottom: 5px;
 }
 
+/* Favorietenpagina */
 .fav-header {
   display: flex;
   align-items: center;
@@ -455,6 +470,7 @@ img {
   color: white;
 }
 
+/* Modal voor details */
 .modal {
   position: fixed;
   inset: 0;
@@ -540,6 +556,7 @@ img {
   color: var(--muted);
 }
 
+/* Kleine melding rechts onder */
 .toast {
   position: fixed;
   right: 1rem;
@@ -553,6 +570,7 @@ img {
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
 }
 
+/* Mobiele layout */
 @media (max-width: 700px) {
   .header {
     padding: 1rem;
