@@ -1,5 +1,4 @@
-// Handige helper functies
-
+// Kleine functies die opnieuw gebruikt kunnen worden.
 export function getLanguageText(lang, enText, nlText) {
   return lang === 'nl' ? nlText : enText;
 }
@@ -10,5 +9,6 @@ export function formatDate(date) {
 
 export function capitalizeFirst(str) {
   if (!str) return '';
+
   return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
 }

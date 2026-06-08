@@ -1,72 +1,84 @@
-// TheMealDB API - https://www.themealdb.com/api.php
-
 const API_URL = 'https://www.themealdb.com/api/json/v1/1';
+const letters = 'abcdefghijklmnopqrstuvwxyz'.split('');
 
-async function fetchData(endpoint) {
-  const response = await fetch(`${API_URL}/${endpoint}`);
+const buildUrl = (endpoint) => `${API_URL}/${endpoint}`;
+
+async function fetchJson(endpoint) {
+  const response = await fetch(buildUrl(endpoint));
+
   if (!response.ok) {
-    throw new Error(`API error: ${response.status}`);
+    throw new Error(`TheMealDB request failed with status ${response.status}`);
   }
+
   return response.json();
 }
 
-function cleanMeal(meal) {
+// Maakt de API-data eenvoudiger voor de rest van de app.
+function formatMeal(meal) {
   if (!meal) return null;
+
   return {
     id: meal.idMeal,
-    name: meal.strMeal || 'Unknown',
+    name: meal.strMeal || 'Unknown meal',
     category: meal.strCategory || 'Other',
     area: meal.strArea || 'International',
     image: meal.strMealThumb || '',
-    tags: meal.strTags || '',
+    tags: meal.strTags || 'No tags',
     youtube: meal.strYoutube || '',
-    instructions: meal.strInstructions || 'No instructions available.'
+    source: meal.strSource || '',
+    instructions: meal.strInstructions || 'No instructions available.',
   };
 }
 
 export async function loadInitialMeals() {
-  const letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
-  const promises = letters.map(letter => fetchData(`search.php?f=${letter}`));
-  const results = await Promise.all(promises);
-  
-  const allMeals = [];
-  const seenIds = new Set();
-  
-  for (const result of results) {
-    if (result.meals) {
-      for (const meal of result.meals) {
-        const cleaned = cleanMeal(meal);
-        if (!seenIds.has(cleaned.id)) {
-          seenIds.add(cleaned.id);
-          allMeals.push(cleaned);
-        }
-      }
+  const requests = letters.map(async (letter) => {
+    try {
+      return await fetchJson(`search.php?f=${letter}`);
+    } catch (err) {
+      console.log(`Geen data voor letter ${letter}:`, err);
+      return { meals: [] };
     }
-  }
-  
-  return allMeals.slice(0, 80);
+  });
+
+  const results = await Promise.all(requests);
+  const meals = [];
+  const usedIds = new Set();
+
+  results.forEach((result) => {
+    if (!result.meals) return;
+
+    result.meals.forEach((meal) => {
+      const formattedMeal = formatMeal(meal);
+
+      if (formattedMeal && !usedIds.has(formattedMeal.id)) {
+        usedIds.add(formattedMeal.id);
+        meals.push(formattedMeal);
+      }
+    });
+  });
+
+  return meals;
 }
 
 export async function loadCategories() {
-  const data = await fetchData('list.php?c=list');
-  if (!data.meals) return [];
-  return data.meals.map(item => item.strCategory).sort();
+  const data = await fetchJson('list.php?c=list');
+  return data.meals ? data.meals.map((item) => item.strCategory).sort() : [];
 }
 
 export async function loadAreas() {
-  const data = await fetchData('list.php?a=list');
-  if (!data.meals) return [];
-  return data.meals.map(item => item.strArea).sort();
+  const data = await fetchJson('list.php?a=list');
+  return data.meals ? data.meals.map((item) => item.strArea).sort() : [];
 }
 
 export async function searchMeals(searchTerm) {
-  const data = await fetchData(`search.php?s=${searchTerm}`);
-  if (!data.meals) return [];
-  return data.meals.map(meal => cleanMeal(meal));
+  const safeTerm = encodeURIComponent(searchTerm.trim());
+  const data = await fetchJson(`search.php?s=${safeTerm}`);
+
+  return data.meals ? data.meals.map(formatMeal).filter(Boolean) : [];
 }
 
 export async function getMealById(mealId) {
-  const data = await fetchData(`lookup.php?i=${mealId}`);
-  if (!data.meals || data.meals.length === 0) return null;
-  return cleanMeal(data.meals[0]);
+  const data = await fetchJson(`lookup.php?i=${encodeURIComponent(mealId)}`);
+
+  return data.meals && data.meals.length > 0 ? formatMeal(data.meals[0]) : null;
 }

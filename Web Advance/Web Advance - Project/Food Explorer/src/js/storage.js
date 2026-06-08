@@ -1,29 +1,23 @@
-// Simpele localStorage functies - niks ingewikkelds
-
-// Opslaan
-function saveToLocal(key, data) {
+// Kleine helpers voor localStorage.
+export function saveToLocal(key, data) {
   try {
-    const toSave = JSON.stringify(data);
-    localStorage.setItem(key, toSave);
+    localStorage.setItem(key, JSON.stringify(data));
     return true;
   } catch (err) {
-    console.log('Save mislukt:', err);
+    console.log('Opslaan mislukt:', err);
     return false;
   }
 }
 
-// Laden met fallback waarde
-function loadFromLocal(key, fallback = null) {
+export function loadFromLocal(key, fallback = null) {
   try {
     const saved = localStorage.getItem(key);
-    
-    if (saved) {
-      return JSON.parse(saved);
-    }
-    
-    return fallback;
+    return saved ? JSON.parse(saved) : fallback;
   } catch (err) {
-    console.log('Load mislukt:', err);
+    console.log('Laden mislukt:', err);
     return fallback;
   }
 }
+
+export const setStorage = saveToLocal;
+export const getStorage = loadFromLocal;

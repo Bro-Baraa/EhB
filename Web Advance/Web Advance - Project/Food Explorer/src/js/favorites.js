@@ -3,91 +3,44 @@ import { getMealById } from './api.js';
 
 const FAV_KEY = 'my_favorite_meals';
 
-// Krijg alle favoriete IDs
-function getFavIds() {
+export function getFavIds() {
   return loadFromLocal(FAV_KEY, []);
 }
 
-// Check of een meal favoriet is
-function isFav(mealId) {
-  const favs = getFavIds();
-  
-  // Simpele loop om te checken
-  for (let i = 0; i < favs.length; i++) {
-    if (favs[i] === mealId) {
-      return true;
-    }
-  }
-  
-  return false;
+export function isFav(mealId) {
+  return getFavIds().includes(mealId);
 }
 
-// Toevoegen of verwijderen
-function toggleFav(mealId) {
-  let favs = getFavIds();
-  let bestaatAl = false;
-  
-  // Check of ID al bestaat
-  for (let i = 0; i < favs.length; i++) {
-    if (favs[i] === mealId) {
-      bestaatAl = true;
-      break;
-    }
-  }
-  
-  let nieuweFavs;
-  let isToegevoegd;
-  
-  if (bestaatAl) {
-    // Verwijderen
-    nieuweFavs = [];
-    for (let i = 0; i < favs.length; i++) {
-      if (favs[i] !== mealId) {
-        nieuweFavs.push(favs[i]);
-      }
-    }
-    isToegevoegd = false;
-  } else {
-    // Toevoegen
-    nieuweFavs = [...favs, mealId];
-    isToegevoegd = true;
-  }
-  
-  saveToLocal(FAV_KEY, nieuweFavs);
-  
+export function toggleFav(mealId) {
+  const favs = getFavIds();
+  const exists = favs.includes(mealId);
+  const newFavs = exists ? favs.filter((id) => id !== mealId) : [...favs, mealId];
+
+  saveToLocal(FAV_KEY, newFavs);
+
   return {
     success: true,
-    added: isToegevoegd,
-    favorites: nieuweFavs
+    added: !exists,
+    favorites: newFavs,
   };
 }
 
-// Alle favorieten wissen
-function clearAllFavs() {
+export function clearAllFavs() {
   saveToLocal(FAV_KEY, []);
 }
 
-// Laad alle favoriete maaltijden (met API calls)
-async function loadFavMeals() {
+export async function loadFavMeals() {
   const ids = getFavIds();
-  
-  if (ids.length === 0) {
-    return [];
-  }
-  
-  // Voor elk ID de maaltijd ophalen
   const meals = [];
-  
-  for (let i = 0; i < ids.length; i++) {
+
+  for (const id of ids) {
     try {
-      const meal = await getMealById(ids[i]);
-      if (meal) {
-        meals.push(meal);
-      }
+      const meal = await getMealById(id);
+      if (meal) meals.push(meal);
     } catch (err) {
-      console.log('Fout bij laden favoriet:', err);
+      console.log('Favoriet laden mislukt:', err);
     }
   }
-  
+
   return meals;
 }
