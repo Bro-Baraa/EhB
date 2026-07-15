@@ -3,28 +3,31 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Food Explorer - Discover Recipes</title>
+  <meta name="description" content="Explore recipes from TheMealDB, filter the dataset and save personal favorites." />
+  <title>Food Explorer - Discover recipes</title>
   <link rel="stylesheet" href="/src/css/main.css" />
 </head>
 <body>
   <header class="header">
-    <div class="logo" aria-label="Food Explorer">
-      <span class="logo-icon">🍽️</span>
+    <a class="logo" href="#" aria-label="Food Explorer home">
+      <span class="logo-icon" aria-hidden="true">🍽️</span>
       <span class="logo-text">Food Explorer</span>
-    </div>
+    </a>
 
     <nav class="main-nav" aria-label="Main navigation">
-      <button class="nav-btn active" data-view="browse" data-en="Browse" data-nl="Ontdekken">Browse</button>
-      <button class="nav-btn" data-view="favorites">
+      <button class="nav-btn active" type="button" data-view="browse" data-en="Browse" data-nl="Ontdekken" aria-current="page">
+        Browse
+      </button>
+      <button class="nav-btn" type="button" data-view="favorites" aria-current="false">
         <span data-en="Favorites" data-nl="Favorieten">Favorites</span>
-        <span id="fav-count" class="badge">0</span>
+        <span id="fav-count" class="badge" aria-label="Saved recipes">0</span>
       </button>
     </nav>
 
     <div class="header-actions">
       <button id="theme-toggle" class="icon-btn" type="button">Light</button>
-
-      <select id="lang-select" aria-label="Language preference">
+      <label class="sr-only" for="lang-select">Language</label>
+      <select id="lang-select">
         <option value="en">English</option>
         <option value="nl">Nederlands</option>
       </select>
@@ -33,12 +36,13 @@
 
   <main class="wrapper">
     <section class="hero">
-      <p class="hero-tag">🍳 Powered by TheMealDB</p>
+      <p class="hero-tag" data-en="Powered by TheMealDB" data-nl="Mogelijk gemaakt door TheMealDB">Powered by TheMealDB</p>
       <h1 data-en="Discover meals from around the world" data-nl="Ontdek maaltijden van over de hele wereld">
         Discover meals from around the world
       </h1>
-      <p data-en="Search, filter and save your favourite recipes in one place." data-nl="Zoek, filter en bewaar je favoriete recepten op één plaats.">
-        Search, filter and save your favourite recipes in one place.
+      <p data-en="Search the dataset, combine filters and keep the recipes you want to try later."
+         data-nl="Doorzoek de dataset, combineer filters en bewaar recepten die je later wilt proberen.">
+        Search the dataset, combine filters and keep the recipes you want to try later.
       </p>
     </section>
 
@@ -46,113 +50,116 @@
       <h2 id="newsletter-title" class="section-title" data-en="Get recipe updates" data-nl="Ontvang receptupdates">
         Get recipe updates
       </h2>
-
       <form id="newsletter-form" class="newsletter-form" novalidate>
-        <input type="email" id="newsletter-email" placeholder="name@example.com" class="search-input" />
-        <button type="submit" class="toggle-btn" data-en="Join" data-nl="Inschrijven">Join</button>
+        <label class="sr-only" for="newsletter-email" data-en="Email address" data-nl="E-mailadres">Email address</label>
+        <input type="email" id="newsletter-email" placeholder="name@example.com" class="search-input" autocomplete="email" required />
+        <button type="submit" class="primary-btn" data-en="Join" data-nl="Inschrijven">Join</button>
       </form>
-
-      <span id="form-feedback" class="results-text hidden"></span>
+      <p id="form-feedback" class="form-feedback hidden" aria-live="polite"></p>
     </section>
 
-    <section id="view-browse" class="view">
+    <section id="view-browse" class="view" aria-labelledby="browse-heading">
+      <h2 id="browse-heading" class="sr-only" data-en="Browse meals" data-nl="Maaltijden ontdekken">Browse meals</h2>
+
       <div class="controls">
         <div class="search-wrap">
+          <label class="sr-only" for="search-input" data-en="Search meals" data-nl="Maaltijden zoeken">Search meals</label>
           <input type="search" id="search-input" class="search-input" placeholder="Search meals..." autocomplete="off" />
           <button id="search-clear" type="button" class="clear-btn hidden" aria-label="Clear search">✕</button>
         </div>
 
         <div class="filters">
+          <label class="sr-only" for="filter-category" data-en="Filter by category" data-nl="Filter op categorie">Filter by category</label>
           <select id="filter-category" class="filter-select">
-            <option value="">All Categories</option>
+            <option value="">All categories</option>
           </select>
 
+          <label class="sr-only" for="filter-area" data-en="Filter by cuisine" data-nl="Filter op keuken">Filter by cuisine</label>
           <select id="filter-area" class="filter-select">
-            <option value="">All Cuisines</option>
+            <option value="">All cuisines</option>
           </select>
 
+          <label class="sr-only" for="sort-select" data-en="Sort meals" data-nl="Maaltijden sorteren">Sort meals</label>
           <select id="sort-select" class="filter-select">
-            <option value="name">A → Z</option>
-            <option value="name-desc">Z → A</option>
-            <option value="category">By Category</option>
-            <option value="area">By Cuisine</option>
+            <option value="name" data-en="Name: A to Z" data-nl="Naam: A tot Z">Name: A to Z</option>
+            <option value="name-desc" data-en="Name: Z to A" data-nl="Naam: Z tot A">Name: Z to A</option>
+            <option value="category" data-en="By category" data-nl="Op categorie">By category</option>
+            <option value="area" data-en="By cuisine" data-nl="Op keuken">By cuisine</option>
           </select>
         </div>
 
-        <div class="view-toggle">
-          <button id="view-grid" class="toggle-btn active" type="button" data-en="Grid" data-nl="Raster">Grid</button>
-          <button id="view-list" class="toggle-btn" type="button" data-en="List" data-nl="Lijst">List</button>
+        <div class="view-toggle" aria-label="Display mode">
+          <button id="view-grid" class="toggle-btn active" type="button" data-en="Grid" data-nl="Raster" aria-pressed="true">Grid</button>
+          <button id="view-list" class="toggle-btn" type="button" data-en="Table" data-nl="Tabel" aria-pressed="false">Table</button>
         </div>
       </div>
 
       <div class="results-bar">
-        <span id="results-count" class="results-text">Loading...</span>
+        <span id="results-count" class="results-text" aria-live="polite">Loading...</span>
         <button id="reset-filters" class="reset-btn hidden" type="button" data-en="Reset filters" data-nl="Filters wissen">
           Reset filters
         </button>
       </div>
 
-      <div id="meals-container" class="meals-grid"></div>
+      <div id="meals-container" class="results-container"></div>
 
-      <div id="loader" class="loader hidden">
-        <div class="spinner"></div>
+      <div id="loader" class="loader hidden" role="status">
+        <div class="spinner" aria-hidden="true"></div>
         <p data-en="Loading meals..." data-nl="Maaltijden laden...">Loading meals...</p>
       </div>
 
       <div id="empty-state" class="empty-state hidden">
-        <p class="empty-icon">🍽️</p>
+        <p class="empty-icon" aria-hidden="true">🍽️</p>
         <p class="empty-title" data-en="No meals found" data-nl="Geen maaltijden gevonden">No meals found</p>
-        <p data-en="Try a different search or filter." data-nl="Probeer een andere zoekterm of filter.">
-          Try a different search or filter.
-        </p>
+        <p data-en="Try a different search or filter." data-nl="Probeer een andere zoekterm of filter.">Try a different search or filter.</p>
       </div>
 
-      <div id="error-state" class="empty-state hidden">
-        <p class="empty-icon">⚠️</p>
+      <div id="error-state" class="empty-state hidden" role="alert">
+        <p class="empty-icon" aria-hidden="true">⚠️</p>
         <p class="empty-title" data-en="Something went wrong" data-nl="Er ging iets mis">Something went wrong</p>
-        <p data-en="Please check your internet connection." data-nl="Controleer je internetverbinding.">
-          Please check your internet connection.
+        <p data-en="The meals could not be loaded. Check your connection and try again."
+           data-nl="De maaltijden konden niet worden geladen. Controleer je verbinding en probeer opnieuw.">
+          The meals could not be loaded. Check your connection and try again.
         </p>
-        <button id="retry-btn" class="toggle-btn" type="button" data-en="Try Again" data-nl="Opnieuw proberen">
-          Try Again
-        </button>
+        <button id="retry-btn" class="primary-btn" type="button" data-en="Try again" data-nl="Opnieuw proberen">Try again</button>
       </div>
     </section>
 
-    <section id="view-favorites" class="view hidden">
+    <section id="view-favorites" class="view hidden" aria-labelledby="favorites-heading">
       <div class="fav-header">
         <div>
           <p class="hero-tag" data-en="Your collection" data-nl="Jouw collectie">Your collection</p>
-          <h2 data-en="Saved Recipes" data-nl="Bewaarde recepten">Saved Recipes</h2>
+          <h2 id="favorites-heading" data-en="Saved recipes" data-nl="Bewaarde recepten">Saved recipes</h2>
         </div>
-
-        <button id="clear-favorites" class="danger-btn hidden" type="button" data-en="Clear all" data-nl="Alles wissen">
-          Clear all
-        </button>
+        <button id="clear-favorites" class="danger-btn hidden" type="button" data-en="Clear all" data-nl="Alles wissen">Clear all</button>
       </div>
 
-      <div id="favorites-container" class="meals-grid"></div>
+      <div id="favorites-container" class="results-container"></div>
 
       <div id="favorites-empty" class="empty-state hidden">
-        <p class="empty-icon">💔</p>
+        <p class="empty-icon" aria-hidden="true">💔</p>
         <p class="empty-title" data-en="No favorites yet" data-nl="Nog geen favorieten">No favorites yet</p>
-        <p data-en="Browse meals and click save to build your collection." data-nl="Ontdek maaltijden en klik op opslaan om je collectie te maken.">
-          Browse meals and click save to build your collection.
+        <p data-en="Open the browse page and save a recipe to start your collection."
+           data-nl="Open de ontdekpagina en bewaar een recept om je collectie te starten.">
+          Open the browse page and save a recipe to start your collection.
         </p>
       </div>
     </section>
   </main>
 
-  <div id="modal" class="modal hidden" role="dialog" aria-modal="true">
-    <div class="modal-backdrop" data-close="modal"></div>
+  <footer class="footer">
+    <p>Food Explorer · <a href="https://www.themealdb.com/api.php" target="_blank" rel="noopener noreferrer">TheMealDB API</a></p>
+  </footer>
 
+  <div id="modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div class="modal-backdrop" data-close="modal"></div>
     <div class="modal-box">
       <button id="modal-close" class="modal-close" type="button" aria-label="Close details">✕</button>
       <div id="modal-body" class="modal-body"></div>
     </div>
   </div>
 
-  <div id="toast" class="toast hidden" role="status"></div>
+  <div id="toast" class="toast hidden" role="status" aria-live="polite"></div>
 
   <script type="module" src="/src/js/main.js"></script>
 </body>
