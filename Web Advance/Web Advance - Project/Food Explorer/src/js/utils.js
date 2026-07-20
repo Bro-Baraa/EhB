@@ -1,14 +1,15 @@
-// Kleine functies die opnieuw gebruikt kunnen worden.
-export function getLanguageText(lang, enText, nlText) {
-  return lang === 'nl' ? nlText : enText;
+export function escapeHtml(value) {
+  return String(value ?? '')
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+    .replaceAll("'", '&#039;');
 }
 
-export function formatDate(date) {
-  return new Date(date).toLocaleDateString();
-}
+export function formatDate(date, language = 'en') {
+  if (!date) return '';
 
-export function capitalizeFirst(str) {
-  if (!str) return '';
-
-  return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+  const locale = language === 'nl' ? 'nl-BE' : 'en-GB';
+  return new Intl.DateTimeFormat(locale, { dateStyle: 'medium' }).format(new Date(date));
 }

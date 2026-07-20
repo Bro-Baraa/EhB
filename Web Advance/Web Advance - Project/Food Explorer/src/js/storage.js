@@ -1,4 +1,6 @@
 // Kleine functies zodat ik localStorage niet overal opnieuw moet schrijven.
+// Alles wordt als JSON opgeslagen zodat we ook objecten en arrays kunnen bewaren,
+// niet enkel losse strings.
 export function saveToLocal(key, data) {
   try {
     localStorage.setItem(key, JSON.stringify(data));
@@ -19,5 +21,7 @@ export function loadFromLocal(key, fallback = null) {
   }
 }
 
+// Aliassen, gebruikt in preferences.js. Zelfde functies, andere naam
+// zodat het daar wat duidelijker leest.
 export const setStorage = saveToLocal;
 export const getStorage = loadFromLocal;
