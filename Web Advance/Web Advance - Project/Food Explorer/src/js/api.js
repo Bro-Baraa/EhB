@@ -1,6 +1,9 @@
-const API_URL = 'https://www.themealdb.com/api/json/v1/1';
+import { loadFromLocal, saveToLocal } from './storage.js';
 
-const letters = 'abcdefghijklmnopqrstuvwxyz'.split('');
+const API_URL = 'https://www.themealdb.com/api/json/v1/1';
+const INITIAL_LETTERS = 'abcdefghijkl'.split('');
+const CACHE_KEY = 'food_explorer_meals_cache_v2';
+const CACHE_DURATION = 24 * 60 * 60 * 1000;
 
 const buildUrl = (endpoint) => `${API_URL}/${endpoint}`;
 
@@ -8,14 +11,29 @@ async function fetchJson(endpoint) {
   const response = await fetch(buildUrl(endpoint));
 
   if (!response.ok) {
-    throw new Error(`TheMealDB request failed: ${response.status}`);
+    throw new Error(`TheMealDB request failed with status ${response.status}`);
   }
 
   return response.json();
 }
 
-// Zet de ruwe API-data om naar een kleiner object dat ik in de app gebruik.
-function formatMeal(meal) {
+function splitTags(tags) {
+  return tags
+    ? tags.split(',').map((tag) => tag.trim()).filter(Boolean)
+    : [];
+}
+
+function extractIngredients(meal) {
+  return Array.from({ length: 20 }, (_, index) => {
+    const number = index + 1;
+    const ingredient = meal[`strIngredient${number}`]?.trim();
+    const measure = meal[`strMeasure${number}`]?.trim();
+
+    return ingredient ? { ingredient, measure: measure || '' } : null;
+  }).filter(Boolean);
+}
+
+function formatMealSummary(meal) {
   if (!meal) return null;
 
   return {
@@ -24,34 +42,51 @@ function formatMeal(meal) {
     category: meal.strCategory || 'Other',
     area: meal.strArea || 'International',
     image: meal.strMealThumb || '',
-    tags: meal.strTags || 'No tags',
+    tags: splitTags(meal.strTags),
     youtube: meal.strYoutube || '',
-    source: meal.strSource || '',
-    instructions: meal.strInstructions || 'No instructions available.',
   };
 }
 
-// Laadt maaltijden voor de startpagina. Ik zoek per beginletter om meer resultaten te krijgen.
+function formatMealDetails(meal) {
+  const summary = formatMealSummary(meal);
+
+  return summary
+    ? {
+        ...summary,
+        source: meal.strSource || '',
+        instructions: meal.strInstructions || 'No instructions available.',
+        ingredients: extractIngredients(meal),
+      }
+    : null;
+}
+
+function hasValidCache(cached) {
+  return Boolean(
+    cached
+      && Array.isArray(cached.meals)
+      && cached.meals.length >= 20
+      && Number.isFinite(cached.timestamp)
+      && Date.now() - cached.timestamp < CACHE_DURATION
+  );
+}
+
 export async function loadInitialMeals() {
-  const requests = letters.map(async (letter) => {
-    try {
-      return await fetchJson(`search.php?f=${letter}`);
-    } catch (err) {
-      console.log(`Geen maaltijden voor letter ${letter}`);
-      return { meals: [] };
-    }
-  });
+  const cached = loadFromLocal(CACHE_KEY, null);
 
-  const results = await Promise.all(requests);
+  if (hasValidCache(cached)) {
+    return cached.meals;
+  }
 
-  const meals = [];
+  const requests = INITIAL_LETTERS.map((letter) => fetchJson(`search.php?f=${letter}`));
+  const results = await Promise.allSettled(requests);
   const usedIds = new Set();
+  const meals = [];
 
   results.forEach((result) => {
-    if (!result.meals) return;
+    if (result.status !== 'fulfilled' || !Array.isArray(result.value.meals)) return;
 
-    result.meals.forEach((meal) => {
-      const formattedMeal = formatMeal(meal);
+    result.value.meals.forEach((meal) => {
+      const formattedMeal = formatMealSummary(meal);
 
       if (formattedMeal && !usedIds.has(formattedMeal.id)) {
         usedIds.add(formattedMeal.id);
@@ -60,42 +95,36 @@ export async function loadInitialMeals() {
     });
   });
 
+  if (meals.length < 20) {
+    throw new Error('The API returned fewer than 20 meals.');
+  }
+
+  meals.sort((a, b) => a.name.localeCompare(b.name));
+  saveToLocal(CACHE_KEY, { meals, timestamp: Date.now() });
+
   return meals;
 }
 
-// Haalt alle categorieën op voor de filter.
 export async function loadCategories() {
   const data = await fetchJson('list.php?c=list');
 
-  return data.meals
-    ? data.meals.map((item) => item.strCategory).sort()
+  return Array.isArray(data.meals)
+    ? data.meals.map((item) => item.strCategory).filter(Boolean).sort()
     : [];
 }
 
-// Haalt alle landen/keukens op voor de filter.
 export async function loadAreas() {
   const data = await fetchJson('list.php?a=list');
 
-  return data.meals
-    ? data.meals.map((item) => item.strArea).sort()
+  return Array.isArray(data.meals)
+    ? data.meals.map((item) => item.strArea).filter(Boolean).sort()
     : [];
 }
 
-// Zoekt maaltijden op naam via de API.
-export async function searchMeals(searchTerm) {
-  const term = encodeURIComponent(searchTerm.trim());
-  const data = await fetchJson(`search.php?s=${term}`);
-
-  return data.meals
-    ? data.meals.map(formatMeal).filter(Boolean)
-    : [];
-}
-
-// Haalt één maaltijd op met ID. Dit gebruik ik vooral voor details en favorieten.
 export async function getMealById(mealId) {
   const data = await fetchJson(`lookup.php?i=${encodeURIComponent(mealId)}`);
 
-  return data.meals && data.meals.length > 0
-    ? formatMeal(data.meals[0])
+  return Array.isArray(data.meals) && data.meals.length > 0
+    ? formatMealDetails(data.meals[0])
     : null;
 }
