@@ -11,7 +11,7 @@ The project is made with HTML, CSS, JavaScript and Vite.
 The website has the following functions:
 
 - browse meals from TheMealDB
-- search for meals
+- search for meals by name, category, cuisine or tag
 - filter by category
 - filter by cuisine
 - sort meals from A to Z and Z to A
@@ -153,27 +153,27 @@ This table shows where the required concepts are used in the project.
 
 | Requirement | File | Lines | How it is used |
 | --- | --- | --- | --- |
-| DOM selection | `ui.js` | 6–24 | Elements are selected with `querySelector` and `querySelectorAll` |
-| DOM manipulation | `ui.js` | 56–85, 126–144 | HTML and classes are updated with JavaScript |
-| Events | `main.js` | 264–330 | Event listeners are used for clicks, input, change and submit |
+| DOM selection | `ui.js` | 5–36 | Elements are selected with `querySelector` and `querySelectorAll` |
+| DOM manipulation | `ui.js` | 127–142, 155–186 | HTML content and classes are updated with JavaScript |
+| Events | `main.js` | 312–399 | Event listeners are used for search, filters, buttons, forms and keyboard events |
 | `const` | Multiple files | multiple | Used for variables that are not reassigned |
-| Template literals | `ui.js` | 56–85, 102–114, 126–144 | Used to create HTML with dynamic values |
-| Array iteration | Multiple files | multiple | Arrays are iterated with methods such as `forEach` and `map` |
-| Array methods | `filters.js` | 5–38 | Methods such as `filter`, `sort`, `map`, `find` and `some` are used |
-| Arrow functions | Multiple files | multiple | Arrow functions are used for functions and callbacks |
-| Ternary operator | `ui.js` | 58, 72, 128 | Used for simple conditional values |
-| Callback functions | `main.js` | 180–187, 264–330 | Functions are passed to event listeners and `setTimeout` |
-| Promises | `api.js` | 85–108 | `Promise.allSettled()` is used for multiple API requests |
-| Async / Await | `api.js`, `favorites.js`, `main.js` | multiple | Used for asynchronous API calls |
-| Observer API | `main.js` | 94–106 | `IntersectionObserver` is used when cards appear on screen |
-| Fetch | `api.js` | 12–18 | `fetch()` is used to get data from TheMealDB |
-| JSON manipulation | `api.js` | 16, 89, 103 | API responses are converted with `response.json()` |
-| Form validation | `main.js` | 211–229 | The newsletter email is checked before saving |
-| LocalStorage | `storage.js`, `favorites.js`, `preferences.js` | multiple | Used for favorites, settings and cached data |
-| CSS Grid / Flexbox | `main.css` | multiple | Used for the layout |
-| Responsive design | `main.css` | multiple | Media queries are used for smaller screens |
-| Vite | `vite.config.js`, `package.json` | all | Vite is used to run and build the project |
-| Folder structure | Project root | all | HTML, CSS and JavaScript are separated into folders |
+| Template literals | `ui.js` | 48–78, 85–104 | Used to create HTML with dynamic values |
+| Array iteration | `api.js`, `favorites.js`, `filters.js`, `ui.js` | multiple | Arrays are iterated with methods such as `forEach`, `map` and `filter` |
+| Array methods | `filters.js` | 8–49 | Methods such as `filter` and `sort` are used for searching, filtering and sorting |
+| Arrow functions | Multiple files | multiple | Arrow functions are used for callbacks and functions |
+| Ternary operator | `ui.js` | 44–46, 60, 139–141 | Used for simple conditional values and rendering |
+| Callback functions | `filters.js`, `main.js` | `filters.js` 55–61; `main.js` 312–399 | Functions are passed as callbacks to `setTimeout` and event listeners |
+| Promises | `api.js` | 80–105 | `Promise.allSettled()` and other promises are used for API requests |
+| Async / Await | `api.js`, `favorites.js`, `main.js` | multiple | `async` and `await` are used for API requests and application loading |
+| Observer API | `main.js` | 52–70 | `IntersectionObserver` is used to animate meal cards when they appear |
+| Fetch | `api.js` | 10–18 | `fetch()` is used to request data from TheMealDB |
+| JSON manipulation | `api.js`, `storage.js` | `api.js` 10–18; `storage.js` 4–21 | `response.json()`, `JSON.stringify()` and `JSON.parse()` are used |
+| Form validation | `main.js` | 253–282 | The newsletter email is validated before it is saved |
+| LocalStorage | `storage.js`, `favorites.js`, `preferences.js` | multiple | Used for favorites, user settings and cached API data |
+| CSS Grid / Flexbox | `main.css` | 285–370 | Flexbox and CSS Grid are used for the layout |
+| Responsive design | `main.css` | 708–810 | Media queries are used for tablet and mobile screen sizes |
+| Vite | `package.json`, `vite.config.js` | all | Vite is used to run, build and preview the project |
+| Folder structure | Project root | all | HTML, CSS and JavaScript are separated into a clear folder structure |
 
 ## Search, filters and sorting
 
