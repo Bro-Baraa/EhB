@@ -6,9 +6,14 @@ export function filterMeals(meals, searchTerm, category, area) {
     const term = searchTerm.toLowerCase().trim();
 
     result = result.filter((meal) => {
-      return meal.name.toLowerCase().includes(term)
-        || meal.category.toLowerCase().includes(term)
-        || meal.area.toLowerCase().includes(term);
+      const searchable = [
+        meal.name,
+        meal.category,
+        meal.area,
+        ...(meal.tags || [])
+      ].join(' ').toLowerCase();
+
+      return searchable.includes(term);
     });
   }
 
