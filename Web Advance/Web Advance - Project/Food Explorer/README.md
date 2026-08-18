@@ -224,6 +224,7 @@ The table contains seven columns with information about the meals.
 
 The selected view is saved so it stays the same after refreshing the page.
 
+
 ## User preferences
 
 The application saves some user preferences with LocalStorage:
@@ -238,6 +239,8 @@ These settings stay saved when the user opens the website again.
 
 Some API data is cached in LocalStorage so the same data does not always need to be loaded again.
 
+
+
 ## Responsive design
 
 The layout works on desktop and smaller screens.
@@ -245,6 +248,15 @@ The layout works on desktop and smaller screens.
 CSS Grid and Flexbox are used in `main.css`.
 
 Media queries are used to change the layout for smaller screen sizes.
+
+
+## AI usage
+
+I used ChatGPT as a support tool during the project, mainly to review parts of the code, help find small errors and improve parts of the README.
+
+The suggestions were checked and adapted before being added to the project.
+
+
 
 ## Sources
 
