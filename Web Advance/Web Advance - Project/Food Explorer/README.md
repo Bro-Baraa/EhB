@@ -245,6 +245,13 @@ CSS Grid and Flexbox are used in `main.css`.
 
 Media queries are used to change the layout for smaller screen sizes.
 
+
+# AI Usage
+
+AI was used during the project to help me understand the assignment requirements, solve some coding problems, debug errors, and improve parts of the README.
+I reviewed the code and tested the application myself.
+
+
 ## Sources
 
 * [TheMealDB API](https://www.themealdb.com/api.php)
